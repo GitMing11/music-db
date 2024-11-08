@@ -26,6 +26,22 @@ export default function Header() {
               Playlist
             </Link>
           </li>
+          <li>
+            <Link
+              href="/users"
+              className="hover:text-[#901010] transition-colors"
+            >
+              Users
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/login"
+              className="hover:text-[#901010] transition-colors"
+            >
+              Login
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>

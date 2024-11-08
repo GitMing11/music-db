@@ -1,53 +1,71 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { postClientCredentialsToken } from "@/app/api/spotify"; // Import the API call
+
+// Define interface for the Spotify Playlist Data (simplified for example)
+interface Playlist {
+  id: string;
+  name: string;
+  description: string;
+  images: { url: string }[];
+  external_urls: { spotify: string };
+}
+
 export default function Home() {
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch Spotify playlists on component mount
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        // Get the access token from Spotify
+        const tokenResponse = await postClientCredentialsToken();
+        const accessToken = tokenResponse.data.access_token;
+
+        // Fetch playlists using the access token
+        const playlistsResponse = await axios.get(
+          "https://api.spotify.com/v1/browse/featured-playlists",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        // Set playlists data
+        setPlaylists(playlistsResponse.data.playlists.items);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching Spotify playlists:", error);
+        setError("Failed to load playlists");
+        setLoading(false);
+      }
+    };
+
+    fetchPlaylists();
+  }, []);
+
   return (
-    <main className="bg-[#202020] text-white min-h-screen flex flex-col items-center justify-center">
+    <main className="bg-[#202020] text-white min-h-screen flex flex-col items-center justify-start">
       {/* Hero Section */}
-      <section className="text-center py-16 px-6 bg-gradient-to-r from-purple-700 via-indigo-800 to-blue-900 text-white w-full">
-        <h1 className="text-4xl font-bold mb-4">
+      <section className="text-center py-24 px-6 bg-gradient-to-r from-[#901010] via-[#b01a1a] to-[#901010] text-white w-full">
+        <h1 className="text-5xl font-bold mb-6 leading-tight">
           Discover Your Next Favorite Song
         </h1>
-        <p className="text-lg mb-6 max-w-3xl mx-auto">
+        <p className="text-xl mb-8 max-w-3xl mx-auto">
           Explore personalized music recommendations, curated playlists, and
           trending hits. Let us help you discover new tunes that match your
           vibe.
         </p>
         <a
           href="#explore"
-          className="bg-green-500 text-white px-6 py-3 rounded-lg text-xl hover:bg-green-600 transition-colors"
+          className="bg-[#901010] text-white px-8 py-4 rounded-lg text-2xl hover:bg-[#a11212] transition-colors"
         >
           Start Exploring
         </a>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 px-6 w-full max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-semibold mb-8">What We Offer</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-white shadow-lg rounded-lg p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">
-              Personalized Playlists
-            </h3>
-            <p>
-              Get music recommendations tailored to your taste. Whether you're
-              into indie, pop, or hip-hop, we’ve got the perfect playlist for
-              you.
-            </p>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Trending Music</h3>
-            <p>
-              Stay updated with the latest hits and viral tracks. Discover
-              what's popular in your country and worldwide.
-            </p>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Explore by Genre</h3>
-            <p>
-              Browse music by your favorite genres and find new artists to love.
-              From jazz to electronic, we’ve got you covered.
-            </p>
-          </div>
-        </div>
       </section>
 
       {/* Featured Playlist Section */}
@@ -55,40 +73,51 @@ export default function Home() {
         id="explore"
         className="py-16 px-6 w-full bg-gray-900 text-center"
       >
-        <h2 className="text-3xl font-semibold mb-8 text-white">
+        <h2 className="text-4xl font-semibold mb-12 text-white">
           Featured Playlists
         </h2>
-        <div className="flex justify-center space-x-8">
-          <div className="bg-white shadow-lg rounded-lg w-60 p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Summer Vibes</h3>
-            <p>Chill beats and sunny tracks to vibe with this summer.</p>
-            <a
-              href="/playlist/summer"
-              className="text-green-500 hover:text-green-600 transition-colors"
+
+        {/* Check if data is loading */}
+        {loading && <p className="text-white text-lg">Loading playlists...</p>}
+
+        {/* Show error message if any */}
+        {error && <p className="text-red-500 text-lg">{error}</p>}
+
+        {/* Display playlists */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {playlists.map((playlist) => (
+            <div
+              key={playlist.id}
+              className="bg-white shadow-lg rounded-lg p-4 text-gray-700 hover:shadow-xl transition-all"
             >
-              Listen Now
-            </a>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg w-60 p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Indie Discoveries</h3>
-            <p>Fresh indie tracks for the adventurous music lover.</p>
-            <a
-              href="/playlist/indie"
-              className="text-green-500 hover:text-green-600 transition-colors"
-            >
-              Listen Now
-            </a>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg w-60 p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Workout Motivation</h3>
-            <p>Upbeat and energizing tracks to fuel your workout.</p>
-            <a
-              href="/playlist/workout"
-              className="text-green-500 hover:text-green-600 transition-colors"
-            >
-              Listen Now
-            </a>
-          </div>
+              {/* Updated Image Section with fixed 130x180 size */}
+              <div className="relative mb-4 overflow-hidden rounded-lg">
+                <img
+                  src={playlist.images[0]?.url}
+                  alt={playlist.name}
+                  className="w-[150] h-[150] object-cover rounded-lg mx-auto transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+
+              {/* Playlist Name */}
+              <h3 className="text-xl font-semibold mb-2">{playlist.name}</h3>
+
+              {/* Playlist Description */}
+              <p className="text-sm text-gray-400 mb-3">
+                {playlist.description}
+              </p>
+
+              {/* Listen Now Button */}
+              <a
+                href={playlist.external_urls.spotify}
+                className="text-[#901010] hover:text-[#a11212] text-sm transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Listen Now
+              </a>
+            </div>
+          ))}
         </div>
       </section>
     </main>

@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prisma 설치
 
-## Getting Started
+# mysql해도 되고
 
-First, run the development server:
+# postgresql해도 되고
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# prisma를 이용해서 어떻게 스크립트를 만드는지
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# gpt prisma+mysql로 nextjs안에 serverless로 만들고 싶은데 함수 만들어줘
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# app router 형식으로
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# nextjs 버전은 15버전 기준으로
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+# npx prisma generate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+스키마 파일이 변경될 때마다 업데이트
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+npx prisma studio
+http://localhost:5555에 studio 켜짐
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# .env 예시
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+DATABASE_URL="mysql://user:password@localhost:3306/mydatabase"
+JWT_SECRET="your-secret-key"
+
+NEXT_PUBLIC_CLIENT_ID=
+NEXT_PUBLIC_CLIENT_SECRET=
+SPOTIFY_REDIRECT_URI=http://localhost:3000/api/spotify/callback
+
+---
+
+# 패키지
+
+react, react-dom
+axios
+prisma
+bcryptjs
+jsonwebtoken
+react-toastify
