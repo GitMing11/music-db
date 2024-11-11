@@ -1,3 +1,5 @@
+// app/playlist/page.tsx
+
 export default function Playlist() {
   return (
     <main className="bg-[#202020] text-white min-h-screen flex flex-col items-center justify-center">

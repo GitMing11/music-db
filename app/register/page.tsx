@@ -1,4 +1,6 @@
+// app/register/page.tsx
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -61,7 +63,7 @@ export default function RegisterPage() {
             type="text"
             id="name"
             value={name}
-            onChange={(e) => setName(e.target.value)} // 이름 변경 처리
+            onChange={(e) => setName(e.target.value)}
             required
             className="w-full p-2 border border-gray-300 rounded"
           />
