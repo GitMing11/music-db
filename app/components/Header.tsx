@@ -21,7 +21,7 @@ export default function Header() {
   return (
     <header className="bg-[#111111] text-white shadow-md">
       <nav className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex flex-row space-x-6 justify-center">
+        <div className="flex flex-row space-x-6 justify-center items-center">
           <Link href="/" className="hover:text-[#901010] transition-colors">
             Home
           </Link>
@@ -43,7 +43,7 @@ export default function Header() {
           {/* 검색창 */}
           <form
             onSubmit={handleSearchSubmit}
-            className="mt-4 flex justify-center"
+            className="flex justify-center"
           >
             <input
               type="text"
