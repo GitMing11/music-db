@@ -1,3 +1,5 @@
+// app/about/page.tsx
+
 export default function About() {
   return (
     <main className="bg-[#202020] text-white min-h-screen flex flex-col items-center justify-center">

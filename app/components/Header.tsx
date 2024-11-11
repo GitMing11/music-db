@@ -3,8 +3,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Next.js useRouter import
-import TrackList, { Track } from "@/app/components/TrackList";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -9,7 +9,6 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
-    // 이메일로 사용자 찾기
     const user = await prisma.user.findUnique({
       where: { email },
     });

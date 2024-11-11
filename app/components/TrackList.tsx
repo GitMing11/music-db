@@ -7,7 +7,7 @@ export interface Track {
   artist: string;
   album: string;
   imageUrl: string;
-  spotifyUrl: string; // Spotify URL 추가
+  spotifyUrl: string;
 }
 
 interface TrackListProps {
@@ -25,7 +25,6 @@ export default function TrackList({ tracks }: TrackListProps) {
           rel="noopener noreferrer"
           className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors"
         >
-          {/* 이미지 크기를 작게 조정 */}
           <img
             src={track.imageUrl}
             alt={`${track.name} album cover`}

@@ -1,9 +1,10 @@
+// app/page.tsx
 "use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { postClientCredentialsToken } from "@/app/api/spotify"; // Import the API call
+import { postClientCredentialsToken } from "@/app/api/spotify";
 
-// Define interface for the Spotify Playlist Data (simplified for example)
 interface Playlist {
   id: string;
   name: string;
@@ -17,15 +18,12 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch Spotify playlists on component mount
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
-        // Get the access token from Spotify
         const tokenResponse = await postClientCredentialsToken();
         const accessToken = tokenResponse.data.access_token;
 
-        // Fetch playlists using the access token
         const playlistsResponse = await axios.get(
           "https://api.spotify.com/v1/browse/featured-playlists",
           {
@@ -90,7 +88,6 @@ export default function Home() {
               key={playlist.id}
               className="bg-white shadow-lg rounded-lg p-4 text-gray-700 hover:shadow-xl transition-all"
             >
-              {/* Updated Image Section with fixed 130x180 size */}
               <div className="relative mb-4 overflow-hidden rounded-lg">
                 <img
                   src={playlist.images[0]?.url}
@@ -99,15 +96,12 @@ export default function Home() {
                 />
               </div>
 
-              {/* Playlist Name */}
               <h3 className="text-xl font-semibold mb-2">{playlist.name}</h3>
 
-              {/* Playlist Description */}
               <p className="text-sm text-gray-400 mb-3">
                 {playlist.description}
               </p>
 
-              {/* Listen Now Button */}
               <a
                 href={playlist.external_urls.spotify}
                 className="text-[#901010] hover:text-[#a11212] text-sm transition-colors"

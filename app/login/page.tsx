@@ -1,4 +1,6 @@
+// app/login/page.tsx
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -83,7 +85,6 @@ export default function LoginPage() {
           {loading ? "로딩 중..." : "로그인"}
         </button>
 
-        {/* 회원가입 페이지로 이동하는 버튼 추가 */}
         <div className="mt-4 text-center">
           <button
             type="button"

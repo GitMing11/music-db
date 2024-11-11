@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation"; // Next.js useSearchParams import
+import { useSearchParams } from "next/navigation";
 import TrackList, { Track } from "@/app/components/TrackList";
 import { postClientCredentialsToken } from "@/app/api/spotify";
 import axios from "axios";
