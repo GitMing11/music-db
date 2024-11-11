@@ -1,48 +1,79 @@
+// components/Header.tsx
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // Next.js useRouter import
+import TrackList, { Track } from "@/app/components/TrackList";
 
 export default function Header() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearchSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery) {
+      // search 페이지로 쿼리 파라미터와 함께 이동
+      router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery(""); // 입력 필드 초기화
+    }
+  };
+
   return (
     <header className="bg-[#111111] text-white shadow-md">
       <nav className="max-w-7xl mx-auto px-4 py-4">
-        <ul className="flex flex-row space-x-6 justify-center">
-          <li>
-            <Link href="/" className="hover:text-[#901010] transition-colors">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/about"
-              className="hover:text-[#901010] transition-colors"
+        <div className="flex flex-row space-x-6 justify-center">
+          <Link href="/" className="hover:text-[#901010] transition-colors">
+            Home
+          </Link>
+
+          <Link
+            href="/about"
+            className="hover:text-[#901010] transition-colors"
+          >
+            About
+          </Link>
+
+          <Link
+            href="/playlist"
+            className="hover:text-[#901010] transition-colors"
+          >
+            Playlist
+          </Link>
+
+          {/* 검색창 */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="mt-4 flex justify-center"
+          >
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for a track"
+              className="px-4 py-2 rounded-md text-black"
+            />
+            <button
+              type="submit"
+              className="ml-2 px-4 py-2 bg-[#901010] text-white rounded-md hover:bg-[#c00] transition-colors"
             >
-              About
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/playlist"
-              className="hover:text-[#901010] transition-colors"
-            >
-              Playlist
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/users"
-              className="hover:text-[#901010] transition-colors"
-            >
-              Users
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/login"
-              className="hover:text-[#901010] transition-colors"
-            >
-              Login
-            </Link>
-          </li>
-        </ul>
+              Search
+            </button>
+          </form>
+          <Link
+            href="/users"
+            className="hover:text-[#901010] transition-colors"
+          >
+            Users
+          </Link>
+
+          <Link
+            href="/login"
+            className="hover:text-[#901010] transition-colors"
+          >
+            Login
+          </Link>
+        </div>
       </nav>
     </header>
   );
