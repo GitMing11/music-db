@@ -1,3 +1,7 @@
+# project info
+
+music db는 뮤직 프로젝트 추천 서비스입니다.
+
 # Prisma 설치
 
 mysql해도 되고
@@ -21,6 +25,7 @@ remote 내용 다 받고 오류 없는 거 확인 후 푸시
 겹치는 내용 작업 시 올릴 때 오류 날 수 있음!! 주의 필요
 
 ---
+
 # npx prisma generate
 
 스키마 파일이 변경될 때마다 업데이트
