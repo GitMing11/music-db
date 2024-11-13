@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
@@ -41,10 +41,7 @@ export default function Header() {
           </Link>
 
           {/* 검색창 */}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="flex justify-center"
-          >
+          <form onSubmit={handleSearchSubmit} className="flex justify-center">
             <input
               type="text"
               value={searchQuery}
@@ -59,18 +56,12 @@ export default function Header() {
               Search
             </button>
           </form>
+
           <Link
             href="/users"
             className="hover:text-[#901010] transition-colors"
           >
-            Users
-          </Link>
-
-          <Link
-            href="/login"
-            className="hover:text-[#901010] transition-colors"
-          >
-            Login
+            MyPage
           </Link>
         </div>
       </nav>
