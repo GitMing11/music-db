@@ -103,6 +103,17 @@ export default function RegisterPage() {
         >
           {loading ? "로딩 중..." : "회원가입"}
         </button>
+
+        {/* 로그인 페이지로 가는 버튼 추가 */}
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={() => router.push("/login")}
+            className="text-blue-500 hover:underline"
+          >
+            이미 계정이 있으신가요? 로그인하기
+          </button>
+        </div>
       </form>
     </div>
   );
