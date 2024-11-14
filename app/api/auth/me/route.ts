@@ -10,11 +10,15 @@ export async function GET(req: Request) {
     // Authorization 헤더에서 Bearer 토큰 추출
     const token = req.headers.get("Authorization")?.replace("Bearer ", "");
     if (!token) {
-      return NextResponse.json({ error: "토큰이 필요합니다." }, { status: 401 });
+      return NextResponse.json(
+        { error: "토큰이 필요합니다." },
+        { status: 401 }
+      );
     }
 
     // JWT 토큰 검증
     const decoded: any = jwt.verify(token, JWT_SECRET);
+    console.log("decoded: ", decoded);
     const userId = decoded.userId;
 
     // 사용자 정보 가져오기
@@ -23,13 +27,18 @@ export async function GET(req: Request) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "사용자를 찾을 수 없습니다." }, { status: 404 });
+      return NextResponse.json(
+        { error: "사용자를 찾을 수 없습니다." },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(user, { status: 200 });
-
   } catch (error) {
     console.error("사용자 정보 가져오기 실패:", error);
-    return NextResponse.json({ error: "사용자 정보 가져오기 실패" }, { status: 500 });
+    return NextResponse.json(
+      { error: "사용자 정보 가져오기 실패" },
+      { status: 500 }
+    );
   }
 }
