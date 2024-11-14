@@ -58,6 +58,12 @@ export default function Header() {
           </form>
 
           <Link
+            href="/recommendation"
+            className="hover:text-[#901010] transition-colors"
+          >
+            Recommendation
+          </Link>
+          <Link
             href="/users"
             className="hover:text-[#901010] transition-colors"
           >

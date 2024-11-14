@@ -1,5 +1,3 @@
-// app/api/spotify.ts
-
 import axios from "axios";
 import { BASE_URL } from "@/app/api/url";
 
@@ -20,6 +18,7 @@ interface RefreshTokenResponse extends TokenObject {
   scope: string;
 }
 
+// Spotify 클라이언트 자격증명 토큰 요청
 export const postClientCredentialsToken = () => {
   return axios<ClientCredentialsTokenResponse>({
     method: "post",
@@ -38,6 +37,7 @@ export const postClientCredentialsToken = () => {
   });
 };
 
+// Spotify Authorization Code로 토큰 요청
 export const postAuthorizationCodeToken = (code: string) => {
   return axios<AuthorizationCodeTokenResponse>({
     method: "post",
@@ -58,6 +58,7 @@ export const postAuthorizationCodeToken = (code: string) => {
   });
 };
 
+// Spotify refresh token 요청
 export const postRefreshToken = (refresh_token: string) => {
   return axios<RefreshTokenResponse>({
     method: "post",
