@@ -50,8 +50,8 @@ export default function UsersPage() {
   };
 
   // 추천 페이지로 이동
-  const handleRecommendation = () => {
-    router.push("/recommendation");
+  const handleGenre = () => {
+    router.push("/genre");
   };
 
   if (!currentUser) return <div>로딩 중...</div>;
@@ -65,7 +65,7 @@ export default function UsersPage() {
       {/* 추천 페이지 버튼 */}
       <div className="w-full max-w-lg mt-8 px-6">
         <button
-          onClick={handleRecommendation}
+          onClick={handleGenre}
           className="w-full px-6 py-3 bg-[#901010] text-white rounded-lg shadow-md hover:bg-[#b01a1a] transition duration-300 transform hover:scale-105"
         >
           추천 페이지로 가기

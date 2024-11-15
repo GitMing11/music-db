@@ -52,9 +52,11 @@ export default function GenrePage() {
     setIsGenresVisible((prevState) => !prevState);
   };
 
-  // 추천 페이지로 이동
+  // 추천 페이지로 이동 (장르를 URL 쿼리 파라미터로 전달)
   const goToRecommendationPage = () => {
-    router.push("/recommendation");
+    const query = new URLSearchParams();
+    savedGenres.forEach((genre) => query.append("genres", genre)); // 'genre'에서 'genres'로 변경
+    router.push(`/recommendation?${query.toString()}`);
   };
 
   return (
@@ -70,11 +72,21 @@ export default function GenrePage() {
       <div className="flex flex-col items-center w-full max-w-3xl my-8 px-4 space-y-8">
         {/* 저장된 장르 표시 */}
         {savedGenres.length > 0 && (
-          <div className="bg-[#282828] shadow-lg rounded-lg p-6 w-full">
-            <h3 className="text-sm font-semibold text-gray-200 mb-2">
-              선택한 장르
-            </h3>
-            <p className="text-sm text-gray-400">{savedGenres.join(", ")}</p>
+          <div className="bg-[#282828] shadow-lg rounded-lg p-6 w-full flex justify-between items-center">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-200 mb-2">
+                선택한 장르
+              </h3>
+              <p className="text-sm text-gray-400">{savedGenres.join(", ")}</p>
+            </div>
+
+            {/* 추천 페이지로 이동 버튼 */}
+            <button
+              onClick={goToRecommendationPage}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+            >
+              추천 페이지로 이동
+            </button>
           </div>
         )}
 
@@ -121,18 +133,6 @@ export default function GenrePage() {
             </button>
           </div>
         </div>
-
-        {/* 음악 추천 받기 버튼 */}
-        {savedGenres.length > 0 && (
-          <div className="w-full max-w-md">
-            <button
-              onClick={goToRecommendationPage}
-              className="w-full px-6 py-3 mt-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-            >
-              음악 추천 받기
-            </button>
-          </div>
-        )}
       </div>
     </main>
   );
