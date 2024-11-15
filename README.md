@@ -26,6 +26,14 @@ remote 내용 다 받고 오류 없는 거 확인 후 푸시
 
 ---
 
+# npx prisma migrate dev
+
+마이그레이션 생성
+
+# npx prisma migrate status
+
+마이그레이션 상태 확인
+
 # npx prisma generate
 
 스키마 파일이 변경될 때마다 업데이트
