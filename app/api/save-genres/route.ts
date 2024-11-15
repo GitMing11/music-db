@@ -26,7 +26,6 @@ export async function POST(req: Request) {
       where: { id: userId },
       data: {
         genres: {
-          set: [], // 기존 장르 초기화
           connectOrCreate: selectedGenres.map((genre: string) => ({
             where: { name: genre },
             create: { name: genre },

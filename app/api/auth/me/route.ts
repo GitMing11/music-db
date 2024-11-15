@@ -24,6 +24,9 @@ export async function GET(req: Request) {
     // 사용자 정보 가져오기
     const user = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        genres: true,
+      },
     });
 
     if (!user) {
