@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     }
 
     // JWT 토큰 생성
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+    const token = jwt.sign({ sub: user.id, email: user.email }, JWT_SECRET, {
       expiresIn: "1h", // 1시간 동안 유효
     });
 

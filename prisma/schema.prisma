@@ -18,8 +18,11 @@ model User {
   name      String
   email     String   @unique
   password  String
+  //likedMusic LikedMusic[]
   createdAt DateTime @default(now())
+  updatedAt  DateTime   @updatedAt  @default(now())
   genres    Genre[]  @relation("UserGenres")
+  userLikes  Like[]
 }
 
 model Genre {
@@ -29,3 +32,40 @@ model Genre {
   updatedAt DateTime @updatedAt
   users     User[]   @relation("UserGenres")
 }
+
+model Track {
+  id            Int      @id @default(autoincrement())
+  name          String   // 트랙 이름
+  imageUrl      String   // 이미지 URL
+  spotifyUrl    String   // Spotify 링크
+  artistName    String   // 아티스트 이름
+  albumName     String   // 앨범 이름
+  releaseDate   DateTime // 발매일
+  isLiked       Boolean  @default(false) // 좋아요 여부
+  createdAt     DateTime @default(now()) // 생성일
+  updatedAt     DateTime @updatedAt // 수정일
+  userLikes     Like[] // 사용자가 좋아요한 기록
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  trackId   Int
+  likedAt   DateTime @default(now()) // 좋아요 날짜
+  track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
+  user      User     @relation(fields: [userId], references: [id]) // 사용자와의 관계
+}
+
+// model LikedMusic {
+//   id        Int      @id @default(autoincrement())
+//   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   userId Int
+//   musicId Int @unique
+//   title String
+//   subTitle String
+//   album String
+//   thumbnail String
+//   link String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
