@@ -1,6 +1,5 @@
 // app/login/page.tsx
 "use client";
-"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -12,7 +11,6 @@ export default function LoginPage() {
   const [error, setError] = useState(""); // 로그인 오류 메시지
   const router = useRouter();
 
-  // 초기 렌더링 시 JWT 토큰이 있는지 확인하여, 이미 로그인된 경우 대시보드로 리디렉션
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -23,7 +21,7 @@ export default function LoginPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setError(""); // 이전 오류 메시지 초기화
+    setError("");
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -36,11 +34,8 @@ export default function LoginPage() {
 
       if (res.ok) {
         const data = await res.json();
-
-        // 로그인 성공 시 JWT 토큰을 localStorage에 저장
         localStorage.setItem("token", data.token);
-
-        router.push("/users"); // 대시보드 페이지로 리디렉션
+        router.push("/users");
       } else {
         const data = await res.json();
         setError(data.error || "로그인 실패");
@@ -54,15 +49,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-screen bg-[#1e1e1e] text-white">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md p-8 border rounded-lg shadow-lg"
+        className="w-full max-w-md bg-[#282828] p-8 rounded-lg shadow-lg"
       >
-        <h2 className="text-2xl font-semibold text-center mb-6">로그인</h2>
+        <h2 className="text-3xl font-bold text-center mb-6">로그인</h2>
         {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+
         <div className="mb-4">
-          <label htmlFor="email" className="block mb-2">
+          <label htmlFor="email" className="block mb-2 text-gray-300">
             이메일
           </label>
           <input
@@ -71,11 +67,12 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 rounded bg-[#3a3a3a] text-white border border-gray-500 focus:border-[#901010]"
           />
         </div>
+
         <div className="mb-6">
-          <label htmlFor="password" className="block mb-2">
+          <label htmlFor="password" className="block mb-2 text-gray-300">
             비밀번호
           </label>
           <input
@@ -84,13 +81,16 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 rounded bg-[#3a3a3a] text-white border border-gray-500 focus:border-[#901010]"
           />
         </div>
+
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-2 text-white rounded bg-blue-500 ${loading ? "opacity-50" : ""}`}
+          className={`w-full p-2 rounded bg-[#901010] text-white hover:bg-[#b01a1a] transition-colors ${
+            loading ? "opacity-50" : ""
+          }`}
         >
           {loading ? "로딩 중..." : "로그인"}
         </button>
@@ -99,7 +99,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => router.push("/register")}
-            className="text-blue-500 hover:underline"
+            className="text-[#b01a1a] hover:underline"
           >
             회원가입하기
           </button>

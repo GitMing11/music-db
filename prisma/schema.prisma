@@ -19,4 +19,13 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  genres    Genre[]  @relation("UserGenres")
+}
+
+model Genre {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]   @relation("UserGenres")
 }
