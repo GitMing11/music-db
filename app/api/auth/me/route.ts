@@ -1,4 +1,3 @@
-// app/api/auth/me/route.ts
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "../../../../lib/prisma";
@@ -19,14 +18,19 @@ export async function GET(req: Request) {
     // JWT 토큰 검증
     const decoded: any = jwt.verify(token, JWT_SECRET);
     console.log("decoded: ", decoded);
-    const userId = decoded.userId;
+    const userId = decoded?.userId;
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "유효하지 않은 사용자 ID입니다." },
+        { status: 400 }
+      );
+    }
 
     // 사용자 정보 가져오기
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        genres: true,
-      },
+      include: { genres: true },
     });
 
     if (!user) {
@@ -38,7 +42,13 @@ export async function GET(req: Request) {
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("사용자 정보 가져오기 실패:", error);
+    // error 타입을 확인하고 처리하기
+    if (error instanceof Error) {
+      console.error("사용자 정보 가져오기 실패:", error.message); // error.message 사용
+    } else {
+      console.error("사용자 정보 가져오기 실패: 알 수 없는 오류", error);
+    }
+
     return NextResponse.json(
       { error: "사용자 정보 가져오기 실패" },
       { status: 500 }

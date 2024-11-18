@@ -96,7 +96,9 @@ export default function UsersPage() {
             <p className="text-lg text-gray-300">
               선택한 장르:{" "}
               <span className="font-semibold text-white">
-                {currentUser.genres.map((genre) => genre.name).join(", ")}
+                {currentUser.genres && currentUser.genres.length > 0
+                  ? currentUser.genres.map((genre) => genre.name).join(", ")
+                  : "선택된 장르 없음"}
               </span>
             </p>
           </div>

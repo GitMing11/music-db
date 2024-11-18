@@ -43,8 +43,48 @@ export default function GenrePage() {
   };
 
   // 선택한 장르를 저장하는 함수
-  const handleSaveGenres = () => {
-    setSavedGenres(selectedGenres);
+  const handleSaveGenres = async () => {
+    if (selectedGenres.length === 0) {
+      alert("장르를 선택해주세요.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("인증되지 않은 사용자입니다.");
+        return;
+      }
+
+      const res = await fetch("/api/genres/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ selectedGenres }),
+      });
+
+      const responseText = await res.text();
+      console.log(responseText);
+
+      if (!res.ok) {
+        const errorData = JSON.parse(responseText);
+        console.error("장르 저장 실패:", errorData.error);
+        alert("장르 저장에 실패했습니다. 다시 시도해 주세요.");
+        return;
+      }
+
+      const data = JSON.parse(responseText);
+      if (data.message === "장르가 저장되었습니다.") {
+        setSavedGenres(selectedGenres);
+        alert("선택한 장르가 저장되었습니다.");
+      }
+    } catch (error) {
+      console.error("장르 저장 중 오류 발생:", error);
+      alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
   };
 
   // 장르 목록 보이기/숨기기 토글

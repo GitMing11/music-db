@@ -1,3 +1,5 @@
+// app/api/genres/route.ts
+
 import { NextResponse } from "next/server";
 import { postClientCredentialsToken } from "../spotify";
 
@@ -6,11 +8,18 @@ const SPOTIFY_API_URL =
 
 export async function GET() {
   try {
-    // Spotify 액세스 토큰 요청
     const tokenResponse = await postClientCredentialsToken();
+
+    if (
+      !tokenResponse ||
+      !tokenResponse.data ||
+      !tokenResponse.data.access_token
+    ) {
+      throw new Error("Spotify 액세스 토큰 요청 실패");
+    }
+
     const token = tokenResponse.data.access_token;
 
-    // Spotify API로 장르 목록 요청
     const response = await fetch(SPOTIFY_API_URL, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -19,18 +28,19 @@ export async function GET() {
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error("Spotify API 오류:", errorData);
       return NextResponse.json(
-        { error: `Failed to fetch genres: ${errorData.error.message}` },
+        { error: `Spotify API 오류: ${errorData.error.message}` },
         { status: response.status }
       );
     }
 
     const data = await response.json();
-    return NextResponse.json({ genres: data.genres }); // JSON 형식으로 장르 목록 반환
+    return NextResponse.json({ genres: data.genres || [] });
   } catch (error) {
     console.error("API 요청 오류:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Spotify API 요청 중 문제가 발생했습니다." },
       { status: 500 }
     );
   }
