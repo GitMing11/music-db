@@ -4,16 +4,25 @@ interface LikeButtonProps {
   itemId: number; // 좋아요를 적용할 아이템의 ID
   initialLiked: boolean; // 초기 좋아요 상태
   onLikeChange: (liked: boolean) => void; // 좋아요 상태 변경 시 호출할 콜백
+  isLoggedIn: boolean; // 로그인 상태
+  userId: number | null; // 로그인된 사용자 ID (null일 수 있음)
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({
   itemId,
   initialLiked,
   onLikeChange,
+  isLoggedIn,
+  userId,
 }) => {
   const [liked, setLiked] = useState(initialLiked);
 
   const handleLike = async () => {
+    if (!isLoggedIn || userId === null) {
+      console.log("로그인 후 좋아요를 눌러주세요.");
+      return;
+    }
+
     const newLikedState = !liked;
     setLiked(newLikedState);
 
@@ -22,8 +31,15 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // 토큰 인증
         },
-        body: JSON.stringify({ itemId, liked: newLikedState }),
+        body: JSON.stringify({ trackId: itemId, userId, liked: newLikedState }),
+      });
+
+      console.log({
+        trackId: itemId,
+        userId: userId,
+        liked: newLikedState,
       });
 
       if (response.ok) {
@@ -42,7 +58,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
     }
   };
 
-  return (
+  return isLoggedIn && userId !== null ? (
     <button
       onClick={handleLike}
       style={{
@@ -54,6 +70,17 @@ const LikeButton: React.FC<LikeButtonProps> = ({
       }}
     >
       {liked ? "♥" : "♡"}
+    </button>
+  ) : (
+    <button
+      style={{
+        fontSize: "24px",
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+      }}
+    >
+      △
     </button>
   );
 };

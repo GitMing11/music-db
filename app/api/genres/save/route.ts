@@ -1,5 +1,4 @@
 // app/api/genres/save/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -40,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 디코딩된 값에서 userId 가져오기
-    const userId = decoded?.userId ? Number(decoded.userId) : null;
+    const userId = decoded?.sub ? String(decoded.sub) : null;
 
     if (!userId) {
       return NextResponse.json(
@@ -65,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     // 사용자의 장르와 연결
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: Number(userId) },
       data: {
         genres: {
           connect: selectedGenres.map((genre: string) => ({

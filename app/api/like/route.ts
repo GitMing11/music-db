@@ -1,5 +1,3 @@
-// app/api/like/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -7,15 +5,17 @@ export async function POST(req: NextRequest) {
   try {
     const { trackId, userId, liked } = await req.json();
 
-    if (!trackId || !userId) {
+    // 필수값 체크
+    if (!trackId || !userId || liked === undefined) {
+      console.error("필수 값이 누락되었습니다:", { trackId, userId, liked });
       return NextResponse.json(
-        { error: "트랙 ID와 사용자 ID가 필요합니다." },
+        { error: "트랙 ID, 사용자 ID, 좋아요 상태(liked)가 필요합니다." },
         { status: 400 }
       );
     }
 
     if (liked) {
-      // 좋아요 생성
+      // 좋아요 추가
       await prisma.like.create({
         data: {
           trackId: trackId,

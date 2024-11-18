@@ -1,3 +1,5 @@
+// app/api/auth/me/route.ts
+
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "../../../../lib/prisma";
@@ -18,7 +20,7 @@ export async function GET(req: Request) {
     // JWT 토큰 검증
     const decoded: any = jwt.verify(token, JWT_SECRET);
     console.log("decoded: ", decoded);
-    const userId = decoded?.userId;
+    const userId = decoded?.sub;
 
     if (!userId) {
       return NextResponse.json(
@@ -30,7 +32,14 @@ export async function GET(req: Request) {
     // 사용자 정보 가져오기
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { genres: true },
+      include: {
+        genres: true,
+        likes: {
+          include: {
+            track: true, // 좋아요한 트랙 정보 포함
+          },
+        },
+      },
     });
 
     if (!user) {

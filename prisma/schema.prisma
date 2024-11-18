@@ -13,6 +13,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 간단한 관계: @relation("") 사용 (대부분의 경우)
+// 복잡한 관계/외래 키 조정: @relation(fields: [], references: []) 사용
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
@@ -22,7 +25,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt  DateTime   @updatedAt  @default(now())
   genres    Genre[]  @relation("UserGenres")
-  userLikes  Like[]
+  likes  Like[]
 }
 
 model Genre {
@@ -44,7 +47,7 @@ model Track {
   isLiked       Boolean  @default(false) // 좋아요 여부
   createdAt     DateTime @default(now()) // 생성일
   updatedAt     DateTime @updatedAt // 수정일
-  userLikes     Like[] // 사용자가 좋아요한 기록
+  likes     Like[] // 사용자가 좋아요한 기록
 }
 
 model Like {
@@ -54,6 +57,7 @@ model Like {
   likedAt   DateTime @default(now()) // 좋아요 날짜
   track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
   user      User     @relation(fields: [userId], references: [id]) // 사용자와의 관계
+  @@unique([userId, trackId])
 }
 
 // model LikedMusic {
