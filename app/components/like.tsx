@@ -35,11 +35,23 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 
     setToastMessage(newLikedState ? "좋아요 추가!" : "좋아요 취소!");
 
+    // 트랙 정보가 없는 경우, 서버에서 트랙 정보를 가져옵니다.
+    let trackInfo = null;
+    if (!trackInfo) {
+      const response = await fetch(`/api/tracks/${itemId}`);
+      if (response.ok) {
+        trackInfo = await response.json();
+      } else {
+        setToastMessage("트랙 정보를 불러오는 데 실패했습니다.");
+        return;
+      }
+    }
     // 서버로 좋아요 상태 변경을 보내는 API 호출 코드 추가
     const dataToSend = {
       trackId: itemId,
       userId,
       liked: newLikedState,
+      trackInfo,
     };
 
     try {
