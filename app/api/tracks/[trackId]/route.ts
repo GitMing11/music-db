@@ -52,7 +52,7 @@ export async function GET(
       artistName: data.artists[0]?.name || "",
       albumName: data.album.name,
       releaseDate: data.album.release_date,
-      isLiked: false,
+      isLiked: data.isLiked,
     };
 
     return NextResponse.json(trackData);

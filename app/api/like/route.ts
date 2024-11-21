@@ -6,29 +6,23 @@ export async function POST(req: NextRequest) {
   try {
     const { trackId, userId, liked, trackInfo } = await req.json();
 
-    console.log("trackId:", trackId, "Type:", typeof trackId);
-    console.log("userId:", userId, "Type:", typeof userId);
-    console.log("liked:", liked, "Type:", typeof liked);
-    console.log("trackInfo:", trackInfo, "Type:", typeof trackInfo);
-
-    // 필수 값 체크
     if (!trackId || !userId || liked === undefined) {
-      console.error("필수 값 누락:", { trackId, userId, liked });
       return NextResponse.json(
         { error: "트랙 ID, 사용자 ID, 좋아요 상태가 필요합니다." },
         { status: 400 }
       );
     }
 
-    // 트랙 정보 확인 및 저장 (좋아요를 눌렀을 경우에만)
+    // 트랙 정보가 있을 경우 업데이트 (좋아요 상태가 true일 때만)
     if (liked && trackInfo && Object.keys(trackInfo).length > 0) {
       const { name, artistName, albumName, imageUrl, spotifyUrl, releaseDate } =
         trackInfo;
 
-      console.log("트랙 정보 저장 (upsert) 시도:", trackId);
-      const track = await prisma.track.upsert({
+      await prisma.track.upsert({
         where: { id: trackId },
-        update: {}, // 존재할 경우 업데이트하지 않음
+        update: {
+          isLiked: liked,
+        },
         create: {
           id: trackId,
           name,
@@ -36,38 +30,43 @@ export async function POST(req: NextRequest) {
           albumName,
           imageUrl,
           spotifyUrl,
-          releaseDate: releaseDate ? new Date(releaseDate) : new Date(), // 날짜 변환
+          releaseDate: releaseDate ? new Date(releaseDate) : new Date(),
+          isLiked: liked,
         },
       });
-
-      console.log("트랙 저장 완료:", track);
-    } else {
-      console.log(
-        "좋아요 상태가 false이거나 트랙 정보가 제공되지 않아 트랙 정보 저장 생략"
-      );
     }
 
-    // 좋아요 상태 업데이트
+    // 좋아요 상태가 true일 때만 Like 테이블에 추가
     if (liked) {
-      console.log("좋아요 상태가 true, 좋아요 추가 시도:");
-      const like = await prisma.like.create({
-        data: {
-          trackId,
+      await prisma.like.upsert({
+        where: {
+          userId_trackId: {
+            userId,
+            trackId,
+          },
+        },
+        update: {
+          likedAt: new Date(),
+        },
+        create: {
           userId,
+          trackId,
         },
       });
-
-      console.log("좋아요 저장 완료:", like);
     } else {
-      console.log("좋아요 상태가 false, 좋아요 삭제 시도:");
-      const result = await prisma.like.deleteMany({
+      // 좋아요가 취소되면 Like 레코드 삭제
+      await prisma.like.deleteMany({
         where: {
           trackId,
           userId,
         },
       });
 
-      console.log("좋아요 삭제 완료:", result.count);
+      // 트랙의 isLiked 상태를 false로 업데이트
+      await prisma.track.update({
+        where: { id: trackId },
+        data: { isLiked: false },
+      });
     }
 
     return NextResponse.json({ success: true });

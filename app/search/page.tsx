@@ -52,6 +52,7 @@ export default function SearchPage() {
         album: track.album.name,
         imageUrl: track.album.images[0].url,
         spotifyUrl: track.external_urls.spotify,
+        isLiked: track.isLiked || false,
       }));
 
       setTracks(fetchedTracks);
