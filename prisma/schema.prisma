@@ -37,7 +37,7 @@ model Genre {
 }
 
 model Track {
-  id            Int      @id @default(autoincrement())
+  id            String      @id @default(cuid())
   name          String   // 트랙 이름
   imageUrl      String   // 이미지 URL
   spotifyUrl    String   // Spotify 링크
@@ -53,7 +53,7 @@ model Track {
 model Like {
   id        Int      @id @default(autoincrement())
   userId    Int
-  trackId   Int
+  trackId   String
   likedAt   DateTime @default(now()) // 좋아요 날짜
   track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
   user      User     @relation(fields: [userId], references: [id]) // 사용자와의 관계

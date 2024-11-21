@@ -1,8 +1,9 @@
+// app/components/TrackList.tsx
 import React, { useState, useEffect } from "react";
 import LikeButton from "./like";
 
 export interface Track {
-  id: number; // 트랙의 고유 ID
+  id: string; // 트랙의 고유 ID
   name: string; // 트랙 이름
   artist: string; // 아티스트 이름
   album: string; // 앨범 이름
@@ -52,7 +53,7 @@ export default function TrackList({ tracks }: TrackListProps) {
     }
   }, []);
 
-  const handleLikeChange = (trackId: number, liked: boolean) => {
+  const handleLikeChange = (trackId: string, liked: boolean) => {
     console.log(`Track ${trackId} is now ${liked ? "liked" : "unliked"}`);
   };
 
@@ -83,17 +84,13 @@ export default function TrackList({ tracks }: TrackListProps) {
               </p>
             </a>
             <div className="mt-2 flex justify-center">
-              {isLoggedIn && userId !== null ? (
-                <LikeButton
-                  itemId={track.id}
-                  initialLiked={track.initialLiked}
-                  onLikeChange={(liked) => handleLikeChange(track.id, liked)}
-                  isLoggedIn={isLoggedIn}
-                  userId={userId}
-                />
-              ) : (
-                <div>△</div>
-              )}
+              <LikeButton
+                itemId={track.id}
+                initialLiked={track.initialLiked}
+                onLikeChange={(liked) => handleLikeChange(track.id, liked)}
+                isLoggedIn={isLoggedIn}
+                userId={userId}
+              />
             </div>
           </div>
         );
