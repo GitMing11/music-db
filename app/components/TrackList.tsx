@@ -23,32 +23,30 @@ export default function TrackList({ tracks }: TrackListProps) {
   const [userId, setUserId] = useState<number | null>(null);
 
   // Redux에서 좋아요 상태 가져오기
-  const likedTracks = useSelector((state: RootState) => state.like);
+  //const likedTracks = useSelector((state: RootState) => state.like);
 
+  const fetchUserInfo = async (token: string) => {
+    try {
+      const response = await fetch("/api/auth/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        setUserId(userData.id);
+      }
+    } catch (error) {
+      console.error("서버 통신 오류:", error);
+    }
+  };
   // 로그인 상태 확인 및 userId 가져오기
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
-
-      const fetchUserInfo = async () => {
-        try {
-          const response = await fetch("/api/auth/me", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (response.ok) {
-            const userData = await response.json();
-            setUserId(userData.id);
-          }
-        } catch (error) {
-          console.error("서버 통신 오류:", error);
-        }
-      };
-
-      fetchUserInfo();
+      fetchUserInfo(token);
     } else {
       setIsLoggedIn(false);
       setUserId(null);
@@ -81,7 +79,7 @@ export default function TrackList({ tracks }: TrackListProps) {
           <div className="mt-2 flex justify-center">
             <LikeButton
               itemId={track.id}
-              initialLiked={likedTracks[track.id] ?? track.isLiked} // Redux 상태와 비교하여 초기값 설정
+              initialLiked={track.isLiked} // Redux 상태와 비교하여 초기값 설정
               isLoggedIn={isLoggedIn}
               userId={userId}
             />
