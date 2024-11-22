@@ -58,7 +58,7 @@ export default function TrackList({ tracks }: TrackListProps) {
       {tracks.map((track) => (
         <div
           key={track.id}
-          className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors"
+          className="bg-[#1c1c1c] p-4 rounded-lg hover:bg-gray-700 transition-colors"
         >
           <a
             href={track.spotifyUrl}

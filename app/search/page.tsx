@@ -25,6 +25,17 @@ export default function SearchPage() {
     });
   };
 
+  // 최근 검색어 삭제 함수
+  const deleteRecentSearch = (searchToDelete: string) => {
+    setRecentSearches((prevSearches) => {
+      const updatedSearches = prevSearches.filter(
+        (search) => search !== searchToDelete
+      );
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+      return updatedSearches;
+    });
+  };
+
   // 트랙 검색 함수 (API 호출)
   const searchTracks = async (query: string) => {
     try {
@@ -59,31 +70,43 @@ export default function SearchPage() {
   }, [query]);
 
   return (
-    <main className="bg-[#202020] text-white min-h-screen flex flex-col items-center py-12 px-4">
-      <h2 className="text-2xl font-semibold text-center text-white mb-4">
-        Search Results for "{query}"
+    <main className="bg-[#121212] text-white min-h-screen flex flex-col items-center py-10 px-6">
+      <h2 className="text-3xl font-semibold text-center text-white mb-6">
+        Search Results for "
+        <span className="font-light text-gray-400">{query}</span>"
       </h2>
 
       {/* 최근 검색어 표시 */}
-      <div className="w-full max-w-4xl mb-4">
-        <h3 className="text-xl text-white mb-2">Recent Searches</h3>
-        <div className="flex flex-wrap gap-2">
+      <div className="w-full max-w-3xl mb-8">
+        <h3 className="text-xl font-medium text-white mb-4">Recent Searches</h3>
+        <div className="flex flex-wrap gap-2 justify-center">
           {recentSearches.map((search, index) => (
-            <button
+            <div
               key={index}
-              onClick={() => {
-                router.push(`?query=${search}`);
-              }}
-              className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+              className="flex items-center bg-[#1c1c1c] rounded-full px-4 py-2"
             >
-              {search}
-            </button>
+              <button
+                onClick={() => {
+                  router.push(`?query=${search}`);
+                }}
+                className="bg-[#333333] text-white px-4 py-2 text-sm rounded-full shadow-lg hover:bg-[#555555] transition-all duration-200 transform hover:scale-110"
+              >
+                {search}
+              </button>
+              <button
+                onClick={() => deleteRecentSearch(search)}
+                className="text-red-500 hover:text-red-700 transition-colors duration-200 ml-2 text-lg"
+              >
+                ❌
+              </button>
+            </div>
           ))}
         </div>
       </div>
 
       {/* 트랙 리스트 */}
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-3xl">
+        <h3 className="text-xl font-medium text-white mb-4">Tracks</h3>
         <TrackList tracks={tracks} />
       </div>
     </main>
