@@ -19,9 +19,14 @@ export default function LikePage() {
   const router = useRouter();
 
   // API 호출하여 좋아요가 true인 트랙들 가져오기
-  const fetchLikedTracks = async () => {
+  const fetchLikedTracks = async (token: string) => {
     try {
-      const response = await fetch("/api/tracks/liked");
+      const response = await fetch("/api/tracks/liked", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (!response.ok) {
         throw new Error("트랙을 불러오는 데 실패했습니다.");
       }
@@ -41,8 +46,8 @@ export default function LikePage() {
       router.push("/login"); // 로그인 페이지로 리다이렉트
       return;
     }
-    fetchLikedTracks();
-  }, []);
+    fetchLikedTracks(token);
+  }, [router]);
 
   if (loading) {
     return (
