@@ -36,14 +36,12 @@ export default function SearchPage() {
     });
   };
 
-  // 트랙 검색 함수 (API 호출)
   const searchTracks = async (query: string) => {
     try {
-      // Authorization 헤더에 JWT 토큰 포함
       const response = await axios.get(`/api/tracks/search`, {
         params: { query },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // 로컬 스토리지에서 JWT를 가져옴
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 

@@ -16,7 +16,6 @@ export async function GET(req: Request) {
     }
 
     // JWT 토큰 검증
-    console.log("22token: ", token);
     const decoded: any = jwt.verify(token, JWT_SECRET);
     console.log("decoded: ", decoded);
     const userId = decoded?.sub;
