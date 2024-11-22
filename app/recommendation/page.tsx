@@ -8,22 +8,22 @@ export default function RecommendationPage() {
   const searchParams = useSearchParams(); // 쿼리 파라미터를 가져옵니다.
   const selectedGenres = searchParams.getAll("genres");
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      if (selectedGenres.length > 0) {
-        try {
-          // 장르를 기반으로 추천 API 호출
-          const res = await fetch(
-            `/api/recommendations?genres=${selectedGenres.join(",")}`
-          );
-          const data = await res.json();
-          setRecommendations(data.tracks);
-        } catch (error) {
-          console.error("추천을 가져오는 중 오류 발생:", error);
-        }
+  const fetchRecommendations = async () => {
+    if (selectedGenres.length > 0) {
+      try {
+        // 장르를 기반으로 추천 API 호출
+        const res = await fetch(
+          `/api/recommendations?genres=${selectedGenres.join(",")}`
+        );
+        const data = await res.json();
+        setRecommendations(data.tracks);
+      } catch (error) {
+        console.error("추천을 가져오는 중 오류 발생:", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchRecommendations();
   }, [searchParams]);
 
