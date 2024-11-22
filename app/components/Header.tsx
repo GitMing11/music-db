@@ -1,12 +1,12 @@
 // components/Header.tsx
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
   const handleSearchSubmit = async (e: React.FormEvent) => {
@@ -14,7 +14,7 @@ export default function Header() {
     if (searchQuery) {
       // search 페이지로 쿼리 파라미터와 함께 이동
       router.push(`/search?query=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery(''); // 입력 필드 초기화
+      setSearchQuery(""); // 입력 필드 초기화
     }
   };
 
@@ -26,11 +26,8 @@ export default function Header() {
             Home
           </Link>
 
-          <Link
-            href="/about"
-            className="hover:text-[#901010] transition-colors"
-          >
-            About
+          <Link href="/like" className="hover:text-[#901010] transition-colors">
+            Like
           </Link>
 
           <Link

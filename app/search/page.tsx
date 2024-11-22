@@ -19,7 +19,10 @@ export default function SearchPage() {
   const saveRecentSearch = (newQuery: string) => {
     // 이미 recentSearches에 동일한 검색어가 있으면 제거
     setRecentSearches((prevSearches) => {
-      const updatedSearches = [newQuery, ...prevSearches.filter(search => search !== newQuery)];
+      const updatedSearches = [
+        newQuery,
+        ...prevSearches.filter((search) => search !== newQuery),
+      ];
       // 최근 검색어를 localStorage에 저장
       localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
       return updatedSearches;
@@ -49,6 +52,7 @@ export default function SearchPage() {
         album: track.album.name,
         imageUrl: track.album.images[0].url,
         spotifyUrl: track.external_urls.spotify,
+        isLiked: track.isLiked || false,
       }));
 
       setTracks(fetchedTracks);
@@ -78,12 +82,12 @@ export default function SearchPage() {
       <h2 className="text-2xl font-semibold text-center text-white mb-4">
         Search Results for "{query}"
       </h2>
-      
+
       {/* 최근 검색어 표시 */}
       <div className="w-full max-w-4xl mb-4">
         <h3 className="text-xl text-white mb-2">Recent Searches</h3>
         <div className="flex flex-wrap gap-2">
-        {recentSearches.map((search, index) => (
+          {recentSearches.map((search, index) => (
             <button
               key={index}
               onClick={() => {
