@@ -50,7 +50,15 @@ export default function UsersPage() {
     router.push("/genre");
   };
 
-  if (!currentUser) return <div>로딩 중...</div>;
+  if (!currentUser)
+    return (
+      <main className="bg-[#121212] text-white min-h-screen flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-16 h-16 border-4 border-[#901010] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-lg font-medium text-gray-300">로딩 중입니다...</p>
+        </div>
+      </main>
+    );
 
   return (
     <main className="bg-[#121212] text-white min-h-screen flex flex-col items-center">
