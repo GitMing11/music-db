@@ -42,8 +42,6 @@ export default function TrackList({ tracks }: TrackListProps) {
           if (response.ok) {
             const userData = await response.json();
             setUserId(userData.id);
-          } else {
-            console.error("사용자 정보 가져오기 실패");
           }
         } catch (error) {
           console.error("서버 통신 오류:", error);

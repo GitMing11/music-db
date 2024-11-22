@@ -24,7 +24,7 @@ CREATE TABLE `Genre` (
 
 -- CreateTable
 CREATE TABLE `Track` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `imageUrl` VARCHAR(191) NOT NULL,
     `spotifyUrl` VARCHAR(191) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `Track` (
 CREATE TABLE `Like` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
-    `trackId` INTEGER NOT NULL,
+    `trackId` VARCHAR(191) NOT NULL,
     `likedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `Like_userId_trackId_key`(`userId`, `trackId`),
