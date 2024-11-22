@@ -68,8 +68,3 @@ bcryptjs
 jsonwebtoken
 
 react-toastify
-
-[] redux + redux toolkit으로 상태관리
-[] 유저가 좋아요를 누르면 해당 아이템의 id 값을 저장하는 상태값으로 저장
-[] 페이지에 들어갈 때 기본적으로 isLiked api에서 music id 만 집계
-[] 트랙 또는 음악을 불러올 때 {redux상태값에 저장된 id 값들 + isLiked api에서 추출한 music id 값} 부분을 뮤직 리스트의 id와 비교해서 일치하면 색칠, 안하면 색칠 x
