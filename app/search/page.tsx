@@ -1,4 +1,3 @@
-// app/search/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -12,6 +11,7 @@ export default function SearchPage() {
 	const router = useRouter();
 	const [tracks, setTracks] = useState<Track[]>([]);
 	const [recentSearches, setRecentSearches] = useState<string[]>([]);
+	const [showAllSearches, setShowAllSearches] = useState(false); // 접기/펼치기 상태
 
 	// 최근 검색어 저장 함수
 	const saveRecentSearch = (newQuery: string) => {
@@ -94,7 +94,11 @@ export default function SearchPage() {
 						Clear All
 					</button>
 				</div>
-				<div className="flex flex-wrap gap-2 justify-center">
+				<div
+					className={`relative flex flex-wrap gap-2 justify-center ${
+						showAllSearches ? '' : 'max-h-[3.5rem] overflow-hidden'
+					}`}
+				>
 					{recentSearches.map((search, index) => (
 						<div
 							key={index}
@@ -117,6 +121,18 @@ export default function SearchPage() {
 						</div>
 					))}
 				</div>
+
+				{/* 접기/펼치기 버튼 */}
+				{recentSearches.length > 5 && (
+					<div className="text-center mt-2">
+						<button
+							onClick={() => setShowAllSearches(!showAllSearches)}
+							className="text-blue-500 hover:text-blue-700 transition-colors duration-200 text-sm"
+						>
+							{showAllSearches ? 'Show Less' : 'Show More'}
+						</button>
+					</div>
+				)}
 			</div>
 
 			{/* 트랙 리스트 */}
