@@ -1,20 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { searchArtistsByGenre } from "@/app/api/spotify-artist"; // 아티스트 검색 API 호출 함수
-import Link from "next/link";
-import ArtistModal from "../components/ArtistModal"; // 상대 경로로 수정
+import { useEffect, useState } from 'react';
+import { searchArtistsByGenre } from '@/app/api/spotify-artist'; // 아티스트 검색 API 호출 함수
+import Link from 'next/link';
+import ArtistModal from '../components/ArtistModal'; // 상대 경로로 수정
+import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa'; // 아이콘 라이브러리
 
 // 장르 배열에 두 개의 장르 추가
 const genres = [
-  "pop",
-  "rock",
-  "hip hop",
-  "jazz",
-  "classical",
-  "electronic",
-  "reggae", // 추가된 장르
-  "blues", // 추가된 장르
+  'pop',
+  'rock',
+  'hip hop',
+  'jazz',
+  'classical',
+  'electronic',
+  'reggae', // 추가된 장르
+  'blues', // 추가된 장르
 ];
 
 const RandomArtistsPage = () => {
@@ -38,9 +39,9 @@ const RandomArtistsPage = () => {
 
         setArtists(randomArtists);
       } catch (error) {
-        console.error("Error fetching artists:", error);
+        console.error('Error fetching artists:', error);
         setError(
-          "Failed to load artists. Please check your API keys and network connection."
+          'Failed to load artists. Please check your API keys and network connection.'
         );
       } finally {
         setLoading(false);
@@ -83,8 +84,8 @@ const RandomArtistsPage = () => {
             onClick={() => setSelectedGenre(genre)}
             className={`flex items-center justify-center w-32 h-14 rounded-full text-lg font-semibold transition duration-200 ease-in-out ${
               selectedGenre === genre
-                ? "bg-[#901010] text-white"
-                : "bg-[#1c1c1c] text-gray-300 hover:bg-[#2c2c2c]"
+                ? 'bg-[#901010] text-white'
+                : 'bg-[#1c1c1c] text-gray-300 hover:bg-[#2c2c2c]'
             }`}
           >
             {genre}
@@ -114,12 +115,36 @@ const RandomArtistsPage = () => {
             >
               Visit on Spotify
             </Link>
+            {/* 소셜 공유 버튼 추가 */}
+            <div className="flex space-x-4 mt-4">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  `https://yourwebsite.com/artists/${artist.id}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <FaFacebookF size={24} />
+              </a>
+
+              <a
+                href={`https://www.instagram.com/?url=${encodeURIComponent(
+                  `https://yourwebsite.com/artists/${artist.id}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-500 hover:text-pink-700"
+              >
+                <FaInstagram size={24} />
+              </a>
+            </div>
           </div>
         ))}
       </div>
       {selectedArtist && (
         <ArtistModal artist={selectedArtist} onClose={closeModal} />
-      )}{" "}
+      )}{' '}
       {/* 모달 표시 */}
     </div>
   );
