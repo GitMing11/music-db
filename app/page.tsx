@@ -18,31 +18,31 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPlaylists = async () => {
-    try {
-      const tokenResponse = await postClientCredentialsToken();
-      const accessToken = tokenResponse.data.access_token;
-
-      const playlistsResponse = await axios.get(
-        "https://api.spotify.com/v1/browse/featured-playlists",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      // Set playlists data
-      setPlaylists(playlistsResponse.data.playlists.items);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching Spotify playlists:", error);
-      setError("Failed to load playlists");
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const tokenResponse = await postClientCredentialsToken();
+        const accessToken = tokenResponse.data.access_token;
+
+        const playlistsResponse = await axios.get(
+          "https://api.spotify.com/v1/browse/featured-playlists",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        // Set playlists data
+        setPlaylists(playlistsResponse.data.playlists.items);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching Spotify playlists:", error);
+        setError("Failed to load playlists");
+        setLoading(false);
+      }
+    };
+
     fetchPlaylists();
   }, []);
 

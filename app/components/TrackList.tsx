@@ -14,6 +14,7 @@ export interface Track {
   isLiked: boolean;
 }
 
+
 interface TrackListProps {
   tracks: Track[];
 }

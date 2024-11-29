@@ -1,10 +1,11 @@
-// app/search/page.tsx
+// 서치 페이지 코드 수정 (/app/search/page.tsx)
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import TrackList, { Track } from "@/app/components/TrackList";
 import axios from "axios";
+import AddToPlaylistButton from "@/app/components/AddToPlaylistButton";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -105,7 +106,34 @@ export default function SearchPage() {
       {/* 트랙 리스트 */}
       <div className="w-full max-w-3xl">
         <h3 className="text-xl font-medium text-white mb-4">Tracks</h3>
-        <TrackList tracks={tracks} />
+        <div className="flex flex-col gap-4">
+          {tracks.map((track) => (
+            <div key={track.id} className="bg-[#1e1e1e] p-5 rounded-lg shadow-lg w-full flex items-center transition-transform duration-300 transform hover:scale-105">
+              <div className="flex items-center w-full">
+                {/* 앨범 이미지 */}
+                <img
+                  src={track.imageUrl}
+                  alt={`${track.name} album cover`}
+                  className="w-16 h-16 object-cover rounded-full border-2 border-[#b01a1a] shadow-md mr-5"
+                />
+                {/* 트랙 정보 */}
+                <div className="flex flex-col justify-center">
+                  <h3 className="text-xl font-semibold text-white mb-1">
+                    {track.name}
+                  </h3>
+                  <p className="text-sm text-gray-400">{track.artist}</p>
+                  <p className="text-sm text-gray-500">{track.album}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 ml-auto">
+                <AddToPlaylistButton
+                  trackId={track.id}
+                  trackName={track.name}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );

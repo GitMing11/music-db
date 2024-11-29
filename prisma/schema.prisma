@@ -21,11 +21,11 @@ model User {
   name      String
   email     String   @unique
   password  String
-  //likedMusic LikedMusic[]
   createdAt DateTime @default(now())
-  updatedAt  DateTime   @updatedAt  @default(now())
+  updatedAt DateTime @updatedAt @default(now())
   genres    Genre[]  @relation("UserGenres")
-  likes  Like[]
+  likes     Like[]
+  playlists Playlist[]
 }
 
 model Genre {
@@ -47,7 +47,8 @@ model Track {
   isLiked       Boolean  @default(false) // 좋아요 여부
   createdAt     DateTime @default(now()) // 생성일
   updatedAt     DateTime @updatedAt // 수정일
-  likes     Like[] // 사용자가 좋아요한 기록
+  likes         Like[] // 사용자가 좋아요한 기록
+  playlists     PlaylistTrack[]
 }
 
 model Like {
@@ -58,6 +59,26 @@ model Like {
   track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
   user      User     @relation(fields: [userId], references: [id]) // 사용자와의 관계
   @@unique([userId, trackId])
+}
+
+model Playlist {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  tracks    PlaylistTrack[]
+}
+
+model PlaylistTrack {
+  id        Int      @id @default(autoincrement())
+  playlistId Int
+  trackId   String
+  addedAt   DateTime @default(now())
+  playlist  Playlist @relation(fields: [playlistId], references: [id])
+  track     Track    @relation(fields: [trackId], references: [id])
+  @@unique([playlistId, trackId])
 }
 
 // model LikedMusic {
