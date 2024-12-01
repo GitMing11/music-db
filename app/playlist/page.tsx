@@ -1,48 +1,87 @@
+// 클라이언트 코드 - PlaylistPage 컴포넌트
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import TrackList, { Track } from "@/app/components/TrackList";
-import axios from "axios";
-
-type Playlist = {
-  id: number;
-  name: string;
-  tracks: Track[];
-};
 
 export default function PlaylistPage() {
-  const [playlist, setPlaylist] = useState<Playlist | null>(null);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // 플레이리스트 불러오기
-  const fetchPlaylist = async () => {
-    try {
-      const response = await axios.get("/api/playlist");
-      if (response.data.length > 0) {
-        setPlaylist(response.data[0]); // 첫 번째 플레이리스트를 설정
-      }
-    } catch (error) {
-      console.error("Error fetching playlist:", error);
+  useEffect(() => {
+    // 페이지가 로드될 때 로컬 스토리지에서 storedPlaylistId 가져오기
+    let storedPlaylistId = localStorage.getItem("storedPlaylistId");
+
+    if (!storedPlaylistId) {
+      // 만약 로컬 스토리지에 저장된 playlistId가 없다면, 설정하는 코드 추가
+      const newPlaylistId = "설정할_플레이리스트_ID"; // 실제 플레이리스트 ID를 여기에 넣으세요.
+      localStorage.setItem("storedPlaylistId", newPlaylistId);
+      storedPlaylistId = newPlaylistId;
+      console.log("storedPlaylistId를 설정했습니다:", newPlaylistId);
     }
+
+    const token = localStorage.getItem("token");
+    const email = localStorage.getItem("email");
+
+    if (!storedPlaylistId || !email || !token) {
+      console.error("storedPlaylistId 상태:", storedPlaylistId);
+      console.error("email 상태:", email);
+      console.error("token 상태:", token);
+      setError("로그인이 필요합니다.");
+      router.push("/login"); // 로그인 페이지로 리다이렉트
+      return;
+    }
+
+    const fetchPlaylist = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/playlist?playlistId=${storedPlaylistId}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("플레이리스트를 불러오는 데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        setTracks(data.tracks);
+      } catch (err: any) {
+        setError(err.message);
+        console.error("플레이리스트를 불러오는 중 오류:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlaylist();
+  }, [router]);
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  const handleAddTrack = (track: Track) => {
+    console.log(`${track.name}을(를) 플레이리스트에 추가합니다.`);
   };
 
-  // 컴포넌트가 마운트되었을 때 플레이리스트 불러오기
-  useEffect(() => {
-    fetchPlaylist();
-  }, []);
-
   return (
-    <main className="bg-[#121212] text-white min-h-screen flex flex-col items-center py-10 px-6">
-      <h2 className="text-3xl font-semibold text-center text-white mb-6">
-        {playlist ? playlist.name : "Loading Playlist..."}
-      </h2>
-      <div className="w-full max-w-3xl">
-        <h3 className="text-xl font-medium text-white mb-4">Tracks</h3>
-        {playlist && playlist.tracks.length > 0 ? (
-          <TrackList tracks={playlist.tracks} />
-        ) : (
-          <p className="text-center text-gray-500">No tracks available.</p>
-        )}
-      </div>
-    </main>
+    <div className="p-6">
+      <h1 className="text-4xl font-bold text-white">플레이리스트</h1>
+      {tracks.length === 0 ? (
+        <p className="text-white">플레이리스트에 트랙이 없습니다.</p>
+      ) : (
+        <TrackList tracks={tracks} onAddTrack={handleAddTrack} />
+      )}
+    </div>
   );
 }

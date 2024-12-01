@@ -33,7 +33,7 @@ export default function LikePage() {
       const data = await response.json();
       setTracks(data);
     } catch (error) {
-      console.error("트랙을 불러오는 데 오류가 발생했습니다:", error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }

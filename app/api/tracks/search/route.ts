@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { postClientCredentialsToken } from "../../spotify";
 import { BASE_API_URL } from "../../url";
+import jwt from "jsonwebtoken";
 import prisma from "@/lib/prisma";
+
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 export async function GET(req: NextRequest) {
   try {
-    // URL에서 쿼리 파라미터 추출
+    const Token = req.headers.get("Authorization")?.split(" ")[1];
+
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
     if (!query) {
@@ -15,26 +19,13 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Spotify API 토큰 받기
-    let tokenResponse;
-    try {
-      tokenResponse = await postClientCredentialsToken();
-    } catch (tokenError) {
-      console.error("Spotify 토큰 요청 실패:", tokenError);
-      return NextResponse.json(
-        { error: "Spotify 토큰 요청 중 문제가 발생했습니다." },
-        { status: 500 }
-      );
-    }
-
+    const tokenResponse = await postClientCredentialsToken();
     const spotifyToken = tokenResponse.data.access_token;
 
-    // 쿼리 파라미터를 URL에 직접 추가
     const url = new URL(`${BASE_API_URL}/v1/search`);
     url.searchParams.append("q", query);
     url.searchParams.append("type", "track");
 
-    // Spotify API에서 트랙 검색
     const response = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${spotifyToken}`,
@@ -51,17 +42,59 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await response.json();
-    const fetchedTracks = data.tracks.items.map((track: any) => {
-      return {
-        id: track.id,
-        name: track.name,
-        artist: track.artists[0].name,
-        album: track.album.name,
-        imageUrl: track.album.images[0].url,
-        spotifyUrl: track.external_urls.spotify,
-        isLiked: false, // 기본값으로 좋아요 여부를 false로 설정
-      };
+
+    const createTrackInfo = (track: any) => ({
+      id: track.id,
+      name: track.name,
+      artist: track.artists[0].name,
+      album: track.album.name,
+      imageUrl: track.album.images[0]?.url,
+      spotifyUrl: track.external_urls.spotify,
     });
+
+    let userId: number | null = null;
+    if (Token) {
+      try {
+        const decoded: any = jwt.verify(Token, JWT_SECRET);
+        userId = decoded?.sub ? Number(decoded.sub) : null;
+
+        if (!userId) {
+          return NextResponse.json(
+            { error: "유효하지 않은 사용자 ID입니다." },
+            { status: 400 }
+          );
+        }
+      } catch (error) {
+        console.error("JWT 검증 실패:", error);
+        return NextResponse.json(
+          { error: "유효하지 않은 인증 토큰입니다." },
+          { status: 401 }
+        );
+      }
+    }
+
+    if (!userId) {
+      const tracks = data.tracks.items.map(createTrackInfo);
+      return NextResponse.json(tracks);
+    }
+
+    const fetchedTracks = await Promise.all(
+      data.tracks.items.map(async (track: any) => {
+        const baseTrackInfo = createTrackInfo(track);
+
+        const isLiked = await prisma.like.findFirst({
+          where: {
+            userId,
+            trackId: track.id,
+          },
+        });
+
+        return {
+          ...baseTrackInfo,
+          isLiked: !!isLiked,
+        };
+      })
+    );
 
     return NextResponse.json(fetchedTracks);
   } catch (error) {
