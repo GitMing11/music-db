@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // useRouter를 이용한 페이지 리디렉션
 import { searchArtistsByGenre } from '@/app/api/spotify-artist'; // 아티스트 검색 API 호출 함수
 import Link from 'next/link';
 import ArtistModal from '../components/ArtistModal'; // 상대 경로로 수정
-import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa'; // 아이콘 라이브러리
+import { FaFacebookF, FaInstagram } from 'react-icons/fa'; // 아이콘 라이브러리
 
-// 장르 배열에 두 개의 장르 추가
 const genres = [
   'pop',
   'rock',
@@ -14,8 +14,8 @@ const genres = [
   'jazz',
   'classical',
   'electronic',
-  'reggae', // 추가된 장르
-  'blues', // 추가된 장르
+  'reggae',
+  'blues',
 ];
 
 const RandomArtistsPage = () => {
@@ -24,6 +24,15 @@ const RandomArtistsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedArtist, setSelectedArtist] = useState<any | null>(null); // 선택된 아티스트 상태
   const [selectedGenre, setSelectedGenre] = useState(genres[0]); // 선택된 장르 상태
+  const router = useRouter();
+
+  useEffect(() => {
+    // 로그인 여부 확인 (토큰이 없으면 로그인 페이지로 리디렉션)
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login'); // 로그인되지 않으면 로그인 페이지로 리디렉션
+    }
+  }, [router]);
 
   useEffect(() => {
     const fetchRandomArtists = async (genre: string) => {
