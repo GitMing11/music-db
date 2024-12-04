@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface ArtistModalProps {
@@ -7,9 +9,27 @@ interface ArtistModalProps {
 }
 
 const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
-  const [message, setMessage] = useState<string>(''); // 상태 추가: 메시지 관리
+  const [userId, setUserId] = useState<string | null>(null); // userId 상태 관리
+  const [message, setMessage] = useState<string>(''); // 메시지 상태 관리
+
+  // useEffect를 사용해 localStorage에서 userId 가져오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedUserId = localStorage.getItem('userId');
+      console.log('Stored userId:', storedUserId); // 로그 추가
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    }
+  }, []);
 
   const handleSave = async () => {
+    if (!userId || userId === 'undefined') {
+      setMessage('로그인 정보가 없습니다. 다시 로그인 해주세요.');
+      console.error('Missing userId:', userId); // 로그 추가
+      return;
+    }
+
     try {
       const response = await fetch('/api/save-artist-info', {
         method: 'POST',
@@ -20,15 +40,25 @@ const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
           artistId: artist.id,
           name: artist.name,
           imageUrl: artist.images[0]?.url,
+          userId: userId, // 상태에서 userId를 전달
         }),
       });
 
-      if (response.ok) {
-        setMessage('아티스트 정보가 저장되었습니다!');
-        setTimeout(() => setMessage(''), 3000); // 3초 후 메시지 사라짐
-        onClose(); // 저장 후 모달 닫기
+      if (!response.ok) {
+        const errorText = await response.text();
+        setMessage(`정보 저장에 실패했습니다: ${errorText}`);
+        return;
+      }
+
+      const result = await response.json();
+      if (result.error) {
+        setMessage(`정보 저장에 실패했습니다: ${result.error}`);
+      } else if (result.details) {
+        setMessage(`정보 저장에 실패했습니다: ${result.details}`);
       } else {
-        setMessage('정보 저장에 실패했습니다.');
+        setMessage('아티스트 정보가 저장되었습니다!');
+        setTimeout(() => setMessage(''), 3000);
+        onClose(); // 저장 후 모달 닫기
       }
     } catch (error) {
       console.error('Error saving artist info:', error);
@@ -66,7 +96,7 @@ const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
           Visit on Spotify
         </Link>
 
-        {/* Save Info 버튼 추가 */}
+        {/* Save Info 버튼 */}
         <div className="mt-4 flex justify-center space-x-4">
           <button
             onClick={handleSave}
@@ -76,7 +106,7 @@ const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
           </button>
         </div>
 
-        {/* 성공 메시지 표시 */}
+        {/* 성공 메시지 */}
         {message && (
           <div className="fixed top-0 left-0 right-0 bg-green-600 text-white text-center font-semibold p-4">
             {message}

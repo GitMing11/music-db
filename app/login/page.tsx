@@ -1,48 +1,49 @@
 // app/login/page.tsx
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(""); // 로그인 오류 메시지
+  const [error, setError] = useState(''); // 로그인 오류 메시지
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
-      router.push("/users"); // 이미 로그인된 경우 대시보드로 리디렉션
+      router.push('/users'); // 이미 로그인된 경우 대시보드로 리디렉션
     }
   }, [router]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setError("");
+    setError('');
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem("token", data.token);
-        router.push("/users");
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
+        router.push('/users');
       } else {
         const data = await res.json();
-        setError(data.error || "로그인 실패");
+        setError(data.error || '로그인 실패');
       }
     } catch (error) {
-      console.error("Error:", error);
-      setError("로그인 중 오류가 발생했습니다.");
+      console.error('Error:', error);
+      setError('로그인 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -89,16 +90,16 @@ export default function LoginPage() {
           type="submit"
           disabled={loading}
           className={`w-full p-2 rounded bg-[#901010] text-white hover:bg-[#b01a1a] transition-colors ${
-            loading ? "opacity-50" : ""
+            loading ? 'opacity-50' : ''
           }`}
         >
-          {loading ? "로딩 중..." : "로그인"}
+          {loading ? '로딩 중...' : '로그인'}
         </button>
 
         <div className="mt-4 text-center">
           <button
             type="button"
-            onClick={() => router.push("/register")}
+            onClick={() => router.push('/register')}
             className="text-[#b01a1a] hover:underline"
           >
             회원가입하기
