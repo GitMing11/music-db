@@ -40,6 +40,7 @@ const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
           artistId: artist.id,
           name: artist.name,
           imageUrl: artist.images[0]?.url,
+          popularity: artist.popularity,
           userId: userId, // 상태에서 userId를 전달
         }),
       });

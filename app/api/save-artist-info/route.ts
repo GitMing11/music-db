@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     console.log('Received body:', body);
 
     // 요청 데이터에서 필요한 값 추출
-    const { artistId, name, imageUrl, userId } = body;
+    const { artistId, name, popularity, imageUrl, userId } = body;
 
     // 필수 데이터 유효성 검사
     if (!artistId || !name || !imageUrl || !userId) {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         artistId, // 아티스트 ID
         name, // 이름
         imageUrl, // 이미지 URL
-        popularity: 0, // 기본값
+        popularity: popularity || 0, // 기본값
         userId: parseInt(userId, 10), // userId를 정수로 변환
       },
     });
