@@ -26,6 +26,8 @@ model User {
   genres    Genre[]  @relation("UserGenres")
   likes     Like[]
   playlists Playlist[]
+  likes  Like[]
+  artists  Artist[]
 }
 
 model Genre {
@@ -74,8 +76,11 @@ model Playlist {
 
 
 model Artist {
-  id        Int     @id @default(autoincrement())
-  artist_id String  @unique
-  name      String
-  image_url String?
+  id         Int     @id @default(autoincrement())
+  artistId   String? @unique // NULL을 허용
+  name       String
+  imageUrl   String?
+  popularity Int?
+  userId     Int?     // NULL을 허용
+  user       User?    @relation(fields: [userId], references: [id]) // 관계 정의
 }
