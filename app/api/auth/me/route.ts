@@ -39,6 +39,11 @@ export async function GET(req: Request) {
             track: true, // 좋아요한 트랙 정보 포함
           },
         },
+        playlists: {
+          include: {
+            track: true, // 플리추가한 트랙 정보 포함
+          },
+        },
       },
     });
 

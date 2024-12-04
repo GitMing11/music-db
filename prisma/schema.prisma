@@ -48,7 +48,8 @@ model Track {
   createdAt     DateTime     @default(now()) // 생성일
   updatedAt     DateTime     @updatedAt // 수정일
   likes         Like[]       // 사용자가 좋아요한 기록
-  playlistTracks PlaylistTrack[]
+  add           Boolean      @default(false) // 트랙이 플레이리스트에 추가된 상태
+  playlists   Playlist[]
 }
 
 model Like {
@@ -63,24 +64,12 @@ model Like {
 
 model Playlist {
   id        Int      @id @default(autoincrement())
-  name      String
   userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  tracks    PlaylistTrack[]
-  
-}
-
-model PlaylistTrack {
-  id         Int      @id @default(autoincrement())
-  userId     Int?     // 선택적 필드로 변경
-  playlistId Int
-  trackId    String
-  addedAt    DateTime @default(now())
-  playlist   Playlist @relation(fields: [playlistId], references: [id])
-  track      Track    @relation(fields: [trackId], references: [id])
-  @@index([playlistId, trackId]) // 복합 인덱스 추가
+  trackId   String
+  addedAt   DateTime @default(now()) // 트랙을 추가한 날짜
+  track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
+  user      User     @relation(fields: [userId], references: [id])  // 사용자와의 관계
+  @@unique([userId, trackId]) // 동일한 사용자가 동일한 트랙을 중복으로 추가할 수 없도록 설정
 }
 
 

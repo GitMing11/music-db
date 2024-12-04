@@ -1,6 +1,9 @@
-// TrackList.tsx
+// app/components/TrackList.tsx
 import React, { useState, useEffect } from "react";
 import LikeButton from "./like";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+import AddButton from "./AddToPlaylistButton";
 
 export interface Track {
   id: string;
@@ -10,16 +13,19 @@ export interface Track {
   imageUrl: string;
   spotifyUrl: string;
   isLiked: boolean;
+  add: boolean;
 }
 
 interface TrackListProps {
   tracks: Track[];
-  onAddTrack: (track: Track) => void; // 부모 컴포넌트에서 받은 트랙 추가 함수
 }
 
-export default function TrackList({ tracks, onAddTrack }: TrackListProps) {
+export default function TrackList({ tracks }: TrackListProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
+
+  // Redux에서 좋아요 상태 가져오기
+  //const likedTracks = useSelector((state: RootState) => state.like);
 
   const fetchUserInfo = async (token: string) => {
     try {
@@ -37,7 +43,6 @@ export default function TrackList({ tracks, onAddTrack }: TrackListProps) {
       console.error("서버 통신 오류:", error);
     }
   };
-
   // 로그인 상태 확인 및 userId 가져오기
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -73,20 +78,19 @@ export default function TrackList({ tracks, onAddTrack }: TrackListProps) {
               {track.artist} - {track.album}
             </p>
           </a>
-          <div className="mt-2 flex flex-col items-center">
+          <div className="mt-2 flex justify-center">
             <LikeButton
               itemId={track.id}
-              initialLiked={track.isLiked}
+              initialLiked={track.isLiked} // Redux 상태와 비교하여 초기값 설정
               isLoggedIn={isLoggedIn}
               userId={userId}
             />
-            {/* 트랙을 플레이리스트에 추가하는 버튼 */}
-            <button
-              onClick={() => onAddTrack(track)} // 트랙 객체 전체를 부모로 전달
-              className="mt-2 bg-[#1DB954] text-white px-4 py-2 rounded-lg hover:bg-[#1DB954] transition-colors"
-            >
-              Add to Playlist
-            </button>
+            <AddButton
+              itemId={track.id}
+              initialAddState={track.add} // Redux 상태와 비교하여 초기값 설정
+              isLoggedIn={isLoggedIn}
+              userId={userId}
+            />
           </div>
         </div>
       ))}

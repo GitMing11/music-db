@@ -53,6 +53,7 @@ export async function GET(
       albumName: data.album.name,
       releaseDate: data.album.release_date,
       isLiked: data.isLiked,
+      add: data.add,
     };
 
     return NextResponse.json(trackData);
