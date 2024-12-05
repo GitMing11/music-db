@@ -94,7 +94,7 @@ const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
           rel="noopener noreferrer"
           className="bg-[#b21212] text-white py-2 px-4 rounded-full transition-colors duration-300 hover:bg-[#901010] text-center"
         >
-          Visit on Spotify
+          스포티파이 방문
         </Link>
 
         {/* Save Info 버튼 */}
@@ -103,7 +103,7 @@ const ArtistModal: React.FC<ArtistModalProps> = ({ artist, onClose }) => {
             onClick={handleSave}
             className="bg-[#901010] text-white py-2 px-4 rounded-full transition-colors duration-300 hover:bg-[#b21212]"
           >
-            Save Info
+            저장
           </button>
         </div>
 
