@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import LikeButton from "./like";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
+import AddButton from "./AddToPlaylistButton";
 
 export interface Track {
   id: string;
@@ -12,6 +13,7 @@ export interface Track {
   imageUrl: string;
   spotifyUrl: string;
   isLiked: boolean;
+  add: boolean;
 }
 
 interface TrackListProps {
@@ -80,6 +82,12 @@ export default function TrackList({ tracks }: TrackListProps) {
             <LikeButton
               itemId={track.id}
               initialLiked={track.isLiked} // Redux 상태와 비교하여 초기값 설정
+              isLoggedIn={isLoggedIn}
+              userId={userId}
+            />
+            <AddButton
+              itemId={track.id}
+              initialAddState={track.add} // Redux 상태와 비교하여 초기값 설정
               isLoggedIn={isLoggedIn}
               userId={userId}
             />
