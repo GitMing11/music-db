@@ -1,3 +1,4 @@
+// app/components/AddToPlaylistButton.tsx
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddState } from "@/app/store/slices/add"; // Redux slice for add state
@@ -6,20 +7,20 @@ import Toast from "./Toast"; // Toast 컴포넌트
 
 interface AddButtonProps {
     itemId: string;
-    initialAddState: boolean;
+    initialadded: boolean;
     isLoggedIn: boolean;
     userId: number | null;
 }
 
 const AddButton: React.FC<AddButtonProps> = ({
     itemId,
-    initialAddState,
+    initialadded,
     isLoggedIn,
     userId,
 }) => {
     const dispatch = useDispatch();
-    const addState = useSelector(
-        (state: RootState) => state.add[itemId] ?? initialAddState
+    const added = useSelector(
+        (state: RootState) => state.add[itemId] ?? initialadded
     ); // Redux 상태에서 add 상태 확인
     const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -29,8 +30,8 @@ const AddButton: React.FC<AddButtonProps> = ({
             return;
         }
 
-        const newAddState = !addState; // 현재 상태를 반전시켜서 새로운 상태를 설정
-        dispatch(setAddState({ itemId, addState: newAddState }));
+        const newAddState = !added; // 현재 상태를 반전시켜서 새로운 상태를 설정
+        dispatch(setAddState({ itemId, added: newAddState }));
 
         setToastMessage(newAddState ? "트랙이 추가되었습니다!" : "트랙이 제거되었습니다!");
 
@@ -50,7 +51,7 @@ const AddButton: React.FC<AddButtonProps> = ({
         const dataToSend = {
             trackId: itemId,
             userId,
-            add: newAddState,
+            added: newAddState,
             trackInfo,
         };
 
@@ -59,7 +60,7 @@ const AddButton: React.FC<AddButtonProps> = ({
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`, // JWT 토큰 사용
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify(dataToSend),
             });
@@ -69,13 +70,13 @@ const AddButton: React.FC<AddButtonProps> = ({
                 setToastMessage(
                     `트랙 추가 실패: ${errorData?.message || "알 수 없는 오류"}`
                 );
-                dispatch(setAddState({ itemId, addState: !newAddState })); // 실패 시 상태 롤백
+                dispatch(setAddState({ itemId, added: !newAddState })); // 실패 시 상태 롤백
             } else {
                 setToastMessage("트랙 추가 성공!");
             }
         } catch (error) {
             setToastMessage("서버 통신 오류!");
-            dispatch(setAddState({ itemId, addState: !newAddState })); // 실패 시 상태 롤백
+            dispatch(setAddState({ itemId, added: !newAddState })); // 실패 시 상태 롤백
         }
     };
 
@@ -91,10 +92,10 @@ const AddButton: React.FC<AddButtonProps> = ({
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: addState ? "green" : "gray", // addState가 true일 때 색상 변경
+            color: added ? "green" : "gray", // addState가 true일 때 색상 변경
             }}
         >
-            {addState ? "✔" : "✚"} {/* 상태에 따라 버튼 텍스트 변경 */}
+            {added ? "✔" : "✚"} {/* 상태에 따라 버튼 텍스트 변경 */}
         </button>
         </div>
     );

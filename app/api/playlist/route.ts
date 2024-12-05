@@ -4,14 +4,13 @@ import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
     try {
-        const { userId, trackId, added, trackInfo } = await req.json();
+        const { trackId, userId, added, trackInfo } = await req.json();
 
-        // 필수 정보가 누락된 경우
         if (!trackId || !userId || added === undefined) {
-        return NextResponse.json(
-            { error: "사용자 ID, 트랙 ID, 플리추가 상태가 필요합니다." },
-            { status: 400 }
-        );
+            return NextResponse.json(
+                { error: "트랙 ID, 사용자 ID, 플리추가 상태가 필요합니다." },
+                { status: 400 }
+            );
         }
 
         // 트랙 정보가 있을 경우 업데이트 (플리추가 상태가 true일 때만)
@@ -36,6 +35,7 @@ export async function POST(req: NextRequest) {
                 },
             });
         }
+        
 
         // 플리추가 상태가 true일 때만 playlist 테이블에 추가
         if (added) {
@@ -57,10 +57,10 @@ export async function POST(req: NextRequest) {
         } else {
             // 플리추가가 취소되면 playlist 레코드 삭제
             await prisma.playlist.deleteMany({
-            where: {
-                trackId,
-                userId,
-            },
+                where: {
+                    trackId,
+                    userId,
+                },
             });
     
             // 트랙의 add 상태를 false로 업데이트

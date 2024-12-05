@@ -13,9 +13,9 @@ const addSlice = createSlice({
     reducers: {
         setAddState(
             state,
-            action: PayloadAction<{ itemId: string; addState: boolean }>
+            action: PayloadAction<{ itemId: string; added: boolean }>
         ) {
-        state[action.payload.itemId] = action.payload.addState;
+        state[action.payload.itemId] = action.payload.added;
         },
     },
 });
