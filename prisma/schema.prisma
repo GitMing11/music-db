@@ -17,16 +17,16 @@ datasource db {
 // 복잡한 관계/외래 키 조정: @relation(fields: [], references: []) 사용
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  genres    Genre[]  @relation("UserGenres")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  genres    Genre[]    @relation("UserGenres")
   likes     Like[]
   playlists Playlist[]
-  artists  Artist[]
+  artists   Artist[]
 }
 
 model Genre {
@@ -38,41 +38,42 @@ model Genre {
 }
 
 model Track {
-  id            String      @id @default(cuid())
-  name          String       // 트랙 이름
-  imageUrl      String       // 이미지 URL
-  spotifyUrl    String       // Spotify 링크
-  artistName    String       // 아티스트 이름
-  albumName     String       // 앨범 이름
-  releaseDate   DateTime     // 발매일
-  isLiked       Boolean      @default(false) // 좋아요 여부
-  createdAt     DateTime     @default(now()) // 생성일
-  updatedAt     DateTime     @updatedAt // 수정일
-  likes         Like[]       // 사용자가 좋아요한 기록
-  add           Boolean      @default(false) // 트랙이 플레이리스트에 추가된 상태
+  id          String     @id @default(cuid())
+  name        String // 트랙 이름
+  imageUrl    String // 이미지 URL
+  spotifyUrl  String // Spotify 링크
+  artistName  String // 아티스트 이름
+  albumName   String // 앨범 이름
+  releaseDate DateTime // 발매일
+  isLiked     Boolean    @default(false) // 좋아요 여부
+  createdAt   DateTime   @default(now()) // 생성일
+  updatedAt   DateTime   @updatedAt // 수정일
+  likes       Like[] // 사용자가 좋아요한 기록
+  add         Boolean    @default(false) // 트랙이 플레이리스트에 추가된 상태
   playlists   Playlist[]
 }
 
 model Like {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  trackId   String
-  likedAt   DateTime @default(now()) // 좋아요 날짜
-  track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
-  user User @relation(fields: [userId], references: [id]) // 사용자와의 관계
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  trackId String
+  likedAt DateTime @default(now()) // 좋아요 날짜
+  track   Track    @relation(fields: [trackId], references: [id], onDelete: Cascade, onUpdate: Cascade) // 트랙과의 관계
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade) // 사용자와의 관계
+
   @@unique([userId, trackId])
 }
 
 model Playlist {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  trackId   String
-  addedAt   DateTime @default(now()) // 트랙을 추가한 날짜
-  track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
-  user      User     @relation(fields: [userId], references: [id])  // 사용자와의 관계
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  trackId String
+  addedAt DateTime @default(now()) // 트랙을 추가한 날짜
+  track   Track    @relation(fields: [trackId], references: [id], onDelete: Cascade, onUpdate: Cascade) // 트랙과의 관계
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade) // 사용자와의 관계
+
   @@unique([userId, trackId]) // 동일한 사용자가 동일한 트랙을 중복으로 추가할 수 없도록 설정
 }
-
 
 model Artist {
   id         Int     @id @default(autoincrement())
@@ -80,6 +81,6 @@ model Artist {
   name       String
   imageUrl   String?
   popularity Int?
-  userId     Int?     // NULL을 허용
-  user       User?    @relation(fields: [userId], references: [id]) // 관계 정의
+  userId     Int? // NULL을 허용
+  user       User?   @relation(fields: [userId], references: [id])
 }
