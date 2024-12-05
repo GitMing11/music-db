@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slices/user";
 import tracksReducer from "./slices/tracks";
 import likeReducer from "./slices/like";
+import addReducer from "./slices/add";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     tracks: tracksReducer,
     like: likeReducer,
+    add: addReducer,
   },
 });
 

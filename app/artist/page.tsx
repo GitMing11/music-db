@@ -84,7 +84,7 @@ const RandomArtistsPage = () => {
 
   return (
     <div className="bg-[#121212] min-h-screen text-white flex flex-col items-center py-8">
-      <h1 className="text-4xl font-bold mb-4 text-center">Today's Artists</h1>
+      <h1 className="text-4xl font-bold mb-4 text-center">오늘의 아티스트</h1>
       {/* 장르 선택 버튼 추가 */}
       <div className="flex space-x-4 mb-6">
         {genres.map((genre) => (
@@ -122,7 +122,7 @@ const RandomArtistsPage = () => {
               rel="noopener noreferrer"
               className="bg-[#901010] text-white py-2 px-4 rounded-full transition-colors duration-300 hover:bg-[#b21212] text-center"
             >
-              Visit on Spotify
+              스포티파이 방문
             </Link>
             {/* 소셜 공유 버튼 추가 */}
             <div className="flex space-x-4 mt-4">

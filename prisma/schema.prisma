@@ -1,8 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// 이것은 당신의 Prisma 스키마 파일입니다,
+// 자세한 내용은 문서에서 확인하세요: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// 쿼리를 더 빠르게 하거나 서버리스 또는 엣지 함수와 쉽게 확장하는 방법을 찾고 계신가요?
+// Prisma Accelerate를 시도해 보세요: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -21,11 +21,11 @@ model User {
   name      String
   email     String   @unique
   password  String
-  //likedMusic LikedMusic[]
   createdAt DateTime @default(now())
-  updatedAt  DateTime   @updatedAt  @default(now())
+  updatedAt DateTime @updatedAt
   genres    Genre[]  @relation("UserGenres")
-  likes  Like[]
+  likes     Like[]
+  playlists Playlist[]
   artists  Artist[]
 }
 
@@ -39,16 +39,18 @@ model Genre {
 
 model Track {
   id            String      @id @default(cuid())
-  name          String   // 트랙 이름
-  imageUrl      String   // 이미지 URL
-  spotifyUrl    String   // Spotify 링크
-  artistName    String   // 아티스트 이름
-  albumName     String   // 앨범 이름
-  releaseDate   DateTime // 발매일
-  isLiked       Boolean  @default(false) // 좋아요 여부
-  createdAt     DateTime @default(now()) // 생성일
-  updatedAt     DateTime @updatedAt // 수정일
-  likes     Like[] // 사용자가 좋아요한 기록
+  name          String       // 트랙 이름
+  imageUrl      String       // 이미지 URL
+  spotifyUrl    String       // Spotify 링크
+  artistName    String       // 아티스트 이름
+  albumName     String       // 앨범 이름
+  releaseDate   DateTime     // 발매일
+  isLiked       Boolean      @default(false) // 좋아요 여부
+  createdAt     DateTime     @default(now()) // 생성일
+  updatedAt     DateTime     @updatedAt // 수정일
+  likes         Like[]       // 사용자가 좋아요한 기록
+  add           Boolean      @default(false) // 트랙이 플레이리스트에 추가된 상태
+  playlists   Playlist[]
 }
 
 model Like {
@@ -57,23 +59,20 @@ model Like {
   trackId   String
   likedAt   DateTime @default(now()) // 좋아요 날짜
   track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
-  user      User     @relation(fields: [userId], references: [id]) // 사용자와의 관계
+  user User @relation(fields: [userId], references: [id]) // 사용자와의 관계
   @@unique([userId, trackId])
 }
 
-// model LikedMusic {
-//   id        Int      @id @default(autoincrement())
-//   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   userId Int
-//   musicId Int @unique
-//   title String
-//   subTitle String
-//   album String
-//   thumbnail String
-//   link String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+model Playlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  trackId   String
+  addedAt   DateTime @default(now()) // 트랙을 추가한 날짜
+  track     Track    @relation(fields: [trackId], references: [id]) // 트랙과의 관계
+  user      User     @relation(fields: [userId], references: [id])  // 사용자와의 관계
+  @@unique([userId, trackId]) // 동일한 사용자가 동일한 트랙을 중복으로 추가할 수 없도록 설정
+}
+
 
 model Artist {
   id         Int     @id @default(autoincrement())
