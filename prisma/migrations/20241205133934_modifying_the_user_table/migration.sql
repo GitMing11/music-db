@@ -18,11 +18,13 @@ CREATE TABLE `Playlist` (
 -- CreateTable
 CREATE TABLE `Artist` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `artist_id` VARCHAR(191) NOT NULL,
+    `artistId` VARCHAR(191) NULL,
     `name` VARCHAR(191) NOT NULL,
-    `image_url` VARCHAR(191) NULL,
+    `imageUrl` VARCHAR(191) NULL,
+    `popularity` INTEGER NULL,
+    `userId` INTEGER NULL,
 
-    UNIQUE INDEX `Artist_artist_id_key`(`artist_id`),
+    UNIQUE INDEX `Artist_artistId_key`(`artistId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -31,3 +33,6 @@ ALTER TABLE `Playlist` ADD CONSTRAINT `Playlist_trackId_fkey` FOREIGN KEY (`trac
 
 -- AddForeignKey
 ALTER TABLE `Playlist` ADD CONSTRAINT `Playlist_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Artist` ADD CONSTRAINT `Artist_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
