@@ -10,6 +10,7 @@ export interface Track {
   imageUrl: string;
   spotifyUrl: string;
   initialLiked: boolean;
+  initialadded: boolean;
 }
 
 interface TracksState {
@@ -35,6 +36,7 @@ export const fetchTracks = createAsyncThunk("tracks/fetchTracks", async () => {
     imageUrl: track.imageUrl,
     spotifyUrl: track.spotifyUrl,
     initialLiked: track.initialLiked,
+    initialadded: track.initialadded,
   }));
 });
 

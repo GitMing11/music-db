@@ -1,98 +1,117 @@
-// app/playlist/page.tsx
+"use client";
 
-export default function Playlist() {
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+// Track 인터페이스 정의
+interface Track {
+  id: string;
+  name: string;
+  artistName: string;
+  albumName: string;
+  imageUrl: string;
+  spotifyUrl: string;
+  isLiked: boolean;
+}
+
+export default function PlaylistPage() {
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  // 서버에서 add가 true인 트랙을 가져오는 함수
+  const fetchAddTracks = async (token: string) => {
+    try {
+      const response = await fetch("/api/tracks/added", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        // 서버 응답이 실패하면 오류 메시지 출력
+        const errorData = await response.json();
+        console.error("API 오류 응답:", errorData);
+        throw new Error("트랙을 불러오는 데 실패했습니다.");
+      }
+  
+      const data = await response.json();
+      setTracks(data); // 받은 데이터를 트랙 상태에 저장
+    } catch (error) {
+      console.error("트랙을 가져오는 중 오류:", error);
+    } finally {
+      setLoading(false); // 로딩 상태 종료
+    }
+  };
+  
+
+  // 로그인 상태 체크 및 API 호출
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login"); // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+      return;
+    }
+
+    fetchAddTracks(token); // 서버에서 트랙 데이터를 가져옴
+  }, [router]);
+
+  // 로딩 중일 때 표시
+  if (loading) {
+    return (
+      <main className="bg-[#121212] text-white min-h-screen flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-16 h-16 border-4 border-[#901010] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-lg font-medium text-gray-300">로딩 중입니다...</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="bg-[#202020] text-white min-h-screen flex flex-col items-center justify-center">
-      {/* Hero Section */}
-      <section className="text-center py-16 px-6 bg-gradient-to-r from-purple-700 via-indigo-800 to-blue-900 text-white w-full">
-        <h1 className="text-4xl font-bold mb-4">
-          Discover Your Next Favorite Song
-        </h1>
-        <p className="text-lg mb-6 max-w-3xl mx-auto">
-          Explore personalized music recommendations, curated playlists, and
-          trending hits. Let us help you discover new tunes that match your
-          vibe.
-        </p>
-        <a
-          href="#explore"
-          className="bg-green-500 text-white px-6 py-3 rounded-lg text-xl hover:bg-green-600 transition-colors"
-        >
-          Start Exploring
-        </a>
-      </section>
+    <main className="bg-[#121212] text-white min-h-screen flex flex-col items-center py-10 px-4">
+      <h1 className="text-4xl font-extrabold text-white mb-6">
+        플레이리스트에 추가된 트랙들
+      </h1>
+      <p className="text-lg text-gray-500 mb-8">
+        총 <span className="font-bold">{tracks.length}</span> 개의 트랙
+      </p>
 
-      {/* Features Section */}
-      <section className="py-16 px-6 w-full max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-semibold mb-8">What We Offer</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-white shadow-lg rounded-lg p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">
-              Personalized Playlists
-            </h3>
-            <p>
-              Get music recommendations tailored to your taste. Whether you're
-              into indie, pop, or hip-hop, we’ve got the perfect playlist for
-              you.
-            </p>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Trending Music</h3>
-            <p>
-              Stay updated with the latest hits and viral tracks. Discover
-              what's popular in your country and worldwide.
-            </p>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Explore by Genre</h3>
-            <p>
-              Browse music by your favorite genres and find new artists to love.
-              From jazz to electronic, we’ve got you covered.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Playlist Section */}
-      <section
-        id="explore"
-        className="py-16 px-6 w-full bg-gray-900 text-center"
-      >
-        <h2 className="text-3xl font-semibold mb-8 text-white">
-          Featured Playlists
-        </h2>
-        <div className="flex justify-center space-x-8">
-          <div className="bg-white shadow-lg rounded-lg w-60 p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Summer Vibes</h3>
-            <p>Chill beats and sunny tracks to vibe with this summer.</p>
-            <a
-              href="/playlist/summer"
-              className="text-green-500 hover:text-green-600 transition-colors"
+      <div className="flex flex-col items-center gap-6 w-full max-w-4xl">
+        {tracks.length === 0 ? (
+          <p className="text-lg text-gray-300">추가된 트랙이 없습니다.</p>
+        ) : (
+          tracks.map((track) => (
+            <div
+              key={track.id}
+              className="bg-[#1e1e1e] p-5 rounded-lg shadow-lg w-full flex items-center transition-transform duration-300 transform hover:scale-105"
             >
-              Listen Now
-            </a>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg w-60 p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Indie Discoveries</h3>
-            <p>Fresh indie tracks for the adventurous music lover.</p>
-            <a
-              href="/playlist/indie"
-              className="text-green-500 hover:text-green-600 transition-colors"
-            >
-              Listen Now
-            </a>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg w-60 p-6 text-gray-700">
-            <h3 className="text-xl font-semibold mb-3">Workout Motivation</h3>
-            <p>Upbeat and energizing tracks to fuel your workout.</p>
-            <a
-              href="/playlist/workout"
-              className="text-green-500 hover:text-green-600 transition-colors"
-            >
-              Listen Now
-            </a>
-          </div>
-        </div>
-      </section>
+              <a
+                href={track.spotifyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center w-full"
+              >
+                {/* 앨범 이미지 */}
+                <img
+                  src={track.imageUrl}
+                  alt={`${track.name} album cover`}
+                  className="w-16 h-16 object-cover rounded-full border-2 border-[#b01a1a] shadow-md mr-5"
+                />
+                {/* 트랙 정보 */}
+                <div className="flex flex-col justify-center">
+                  <h3 className="text-xl font-semibold text-white mb-1">
+                    {track.name}
+                  </h3>
+                  <p className="text-sm text-gray-400">{track.artistName}</p>
+                  <p className="text-sm text-gray-500">{track.albumName}</p>
+                </div>
+              </a>
+            </div>
+          ))
+        )}
+      </div>
     </main>
   );
 }
