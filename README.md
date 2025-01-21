@@ -4,18 +4,6 @@ music db는 뮤직 프로젝트 추천 서비스입니다.
 
 # Prisma 설치
 
-mysql해도 되고
-
-postgresql해도 되고
-
-prisma를 이용해서 어떻게 스크립트를 만드는지
-
-gpt prisma+mysql로 nextjs안에 serverless로 만들고 싶은데 함수 만들어줘
-
-app router 형식으로
-
-nextjs 버전은 15버전 기준으로
-
 ---
 
 # dev에서 브랜치 만들어서 작업
